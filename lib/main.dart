@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 void main() {
   runApp(const MyApp());
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -14,7 +13,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
       
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 90, 20, 15),
+          seedColor: const Color.fromARGB(159, 15, 90, 24),
         ),
       ),
       home: const MyHomePage(title: 'DEMO PROkbkgbkjgbkgk'),
