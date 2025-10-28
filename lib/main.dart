@@ -5,8 +5,36 @@ void main() {
 }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
+// label text ile kaybolan buton denemesi
   @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: SizedBox(
+              width: double.infinity, 
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: 'Name', 
+                  hintText: 'Enter your name', 
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12), // Rounded corners
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+}
+// bunu dışarı attığım için şu an bu çalışmıyor sadece buton gözükücek.
+@override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demokkkokl',
@@ -16,10 +44,9 @@ class MyApp extends StatelessWidget {
           seedColor: const Color.fromARGB(159, 15, 90, 24),
         ),
       ),
-      home: const MyHomePage(title: 'DEMO PROkbkgbkjgbkgk'),
+      home: const MyHomePage(title: 'DEMO PROkbkjgbkgk'),
     );
   }
-}
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
