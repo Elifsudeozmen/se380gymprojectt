@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 //eğer butonların rengi mouse geldiğinde değişsin falan istiyorsak o zaman stateful widget
 class HomeScreen extends StatelessWidget {
@@ -56,7 +57,7 @@ class HomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: TextField(
                   decoration: InputDecoration(
-                    labelText: 'Username',
+                    labelText: 'Username'.tr(),
                     fillColor: const Color.fromARGB(255, 236, 172, 193),
                     filled: true,
                     border: OutlineInputBorder(
@@ -74,7 +75,7 @@ class HomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: TextField(
                   decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: 'Password'.tr(),
                     fillColor: const Color.fromARGB(255, 236, 172, 193),
                     filled: true,
                     border: OutlineInputBorder(
@@ -106,7 +107,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {},
-                      child: Text('Sign Up'),
+                      child: Text('Sign Up'.tr()),
                     ),
                   ),
 
@@ -114,11 +115,31 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () {
                       //işlevi
                     },
-                    child: Text('Sign In'),
+                    child: Text('Sign In'.tr()),
+                  ),
+                ],
+              ),
+              SizedBox(height: 30),
+              //Language Buttons with help of icons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Text("🇹🇷", style: TextStyle(fontSize: 30)),
+                    onPressed: () {
+                      context.setLocale(const Locale('tr'));
+                    },
+                  ),
+                  IconButton(
+                    icon: const Text("🇺🇸", style: TextStyle(fontSize: 30)),
+                    onPressed: () {
+                      context.setLocale(const Locale('en'));
+                    },
                   ),
                 ],
               ),
             ],
+            
           ),
         ),
       ),
