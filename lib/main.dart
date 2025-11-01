@@ -1,4 +1,4 @@
-/*import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
@@ -100,8 +100,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ), 
     );
   }
-}*/
-import 'package:flutter/material.dart';
+}
+/*import 'package:flutter/material.dart';
 import 'package:gymproject/_lib/features/profile_page/presentation/profile_page.dart';
 
 void main() {
@@ -119,4 +119,4 @@ class MyApp extends StatelessWidget {
       home: const ProfilePage(),
     );
   }
-}
+}*/

@@ -9,7 +9,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('GymTracker'),
+        title: Text('GymTracker'.tr()),
         //en baştaki icon için leading
         leading: IconButton(
           onPressed: () {
@@ -147,6 +147,39 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-void main() {
+/*void main() {
   runApp(MaterialApp(home: HomeScreen()));
+}*/
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+
+  runApp(
+    EasyLocalization(
+      supportedLocales: const [
+        Locale('en'),
+        Locale('tr'),
+      ],
+      path: 'assets/lang', // çeviri dosyalarının olduğu klasör
+      fallbackLocale: const Locale('en'),
+      child: const MyApp(),
+    ),
+  );
 }
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: const HomeScreen(),
+      // bunlar olmazsa olmaz!!!
+      locale: context.locale,
+      supportedLocales: context.supportedLocales,
+      localizationsDelegates: context.localizationDelegates,
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+

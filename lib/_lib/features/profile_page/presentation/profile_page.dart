@@ -3,6 +3,7 @@ import 'widgets/profile_avatar.dart';
 import 'widgets/profile_textfield.dart';
 import 'widgets/password_field.dart';
 import 'widgets/signup_button.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -67,4 +68,7 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
+}
+void main() {
+  runApp(MaterialApp(home: ProfilePage()));
 }
