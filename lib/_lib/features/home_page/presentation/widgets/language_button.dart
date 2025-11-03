@@ -6,7 +6,8 @@ class LanguageButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    //return 
+    /*Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
@@ -23,5 +24,23 @@ class LanguageButtons extends StatelessWidget {
         ),
       ],
     );
-  }
+  }*/
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      IconButton(
+        icon: const Text("🇹🇷", style: TextStyle(fontSize: 30)),
+          onPressed: () {
+            context.setLocale(const Locale('tr'));
+          },
+                  ),
+                  IconButton(
+                    icon: const Text("🇺🇸", style: TextStyle(fontSize: 30)),
+                    onPressed: () {
+                      context.setLocale(const Locale('en'));
+                    },
+                  ),
+                ],
+  );
+}
 }
