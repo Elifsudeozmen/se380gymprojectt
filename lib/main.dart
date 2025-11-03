@@ -135,7 +135,7 @@ void main() async {
         Locale('tr'),
       ],
       path: 'assets/lang', // çeviri dosyalarının olduğu klasör
-      fallbackLocale: const Locale('tr'),
+      fallbackLocale: const Locale('en'),
       child: const MyApp(),
     ),
   );
@@ -147,14 +147,35 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      home: const HomePage(),
+      // bunlar olmazsa olmaz!!!
       locale: context.locale,
       supportedLocales: context.supportedLocales,
       localizationsDelegates: context.localizationDelegates,
       debugShowCheckedModeBanner: false,
-
-      builder: (context, child) {
-        return const HomePage();
-      },
     );
   }
 }
+/* alaranın maini 
+import 'package:flutter/material.dart';
+import 'pages/registration_page.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: RegistrationPage(),
+    );
+  }
+}
+ */
+
+
+
