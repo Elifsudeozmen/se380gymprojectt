@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:gymproject/_lib/features/profile_page/presentation/profile_page.dart';
 
 class AuthButtons extends StatelessWidget {
   const AuthButtons({super.key});
@@ -14,9 +15,15 @@ class AuthButtons extends StatelessWidget {
             foregroundColor: Colors.black,
             backgroundColor: const Color.fromARGB(255, 48, 122, 207),
           ),
-          onPressed: () {
-            // Sign up işlevi
-          },
+         onPressed: () {
+          Navigator.push(
+           context,
+           MaterialPageRoute(
+            builder: (context) => const ProfilePage(),
+      ),
+      );
+    },
+
           child: Text('Sign Up'.tr()),
         ),
         ElevatedButton(
