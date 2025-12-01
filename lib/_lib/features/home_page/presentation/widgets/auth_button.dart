@@ -25,7 +25,7 @@ class AuthButtons extends StatelessWidget {
       );
     },
 
-          child: Text('Sign Up'.tr()),
+          child: Text('Sign_Up'.tr()),
         ),
         ElevatedButton(
           onPressed: () {
@@ -36,7 +36,7 @@ class AuthButtons extends StatelessWidget {
       ),
       );
           },
-          child: Text('Sign In'.tr()),
+          child: Text('Sign_In'.tr()),
         ),
       ],
     );

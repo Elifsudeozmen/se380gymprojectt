@@ -1,7 +1,7 @@
 {   
   "Username": "Username",
   "Password": "Password",
-  "Sign Up": "Sign Up",
-  "Sign In": "Sign In",
+  "Sign_Up": "Sign Up",
+  "Sign_In": "Sign In",
   "GymTracker":"GymTracker"
 }

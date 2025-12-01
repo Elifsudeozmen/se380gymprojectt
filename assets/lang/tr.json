@@ -1,7 +1,7 @@
 {
   "Username": "Kullanıcı Adı",
   "Password": "Şifre",
-  "Sign Up": "Kayıt Ol",
-  "Sign In": "Giriş Yap",
+  "Sign_Up": "Kayıt Ol",
+  "Sign_In": "Giriş Yap",
   "GymTracker":"Spor Salonu Takipçisi"
 }
