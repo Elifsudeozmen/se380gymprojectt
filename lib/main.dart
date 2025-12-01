@@ -176,7 +176,7 @@ class MyApp extends StatelessWidget {
   }
 }
  */
-/*void main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
@@ -207,23 +207,8 @@ class MyApp extends StatelessWidget {
 );
 
   }
-}*/
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await EasyLocalization.ensureInitialized();
-
-  runApp(
-    EasyLocalization(
-      supportedLocales: const [
-        Locale('en'),
-        Locale('tr'),
-      ],
-      path: 'assets/lang',
-      fallbackLocale: const Locale('en'),
-      child: const HomePage(),
-    ),
-  );
 }
+
 
 
 

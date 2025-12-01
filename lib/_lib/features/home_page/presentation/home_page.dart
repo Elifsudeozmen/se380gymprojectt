@@ -35,6 +35,7 @@ class HomePage extends StatelessWidget {
           IconButton(
             onPressed: () {
               // Dil değiştirici ikonuna fonksiyon eklenecek
+       
             },
             icon: const Icon(Icons.language_rounded),
           ),
