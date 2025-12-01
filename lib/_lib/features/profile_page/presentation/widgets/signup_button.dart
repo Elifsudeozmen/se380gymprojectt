@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
 //signupbutton adında yeni bir widget tanımladık
 /*class SignUpButton extends StatelessWidget {
   const SignUpButton({super.key});

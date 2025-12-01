@@ -176,7 +176,7 @@ class MyApp extends StatelessWidget {
   }
 }
  */
-void main() async {
+/*void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
@@ -199,15 +199,32 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const HomePage(),
-      // bunlar olmazsa olmaz!!!
-      locale: context.locale,
-      supportedLocales: context.supportedLocales,
-      localizationsDelegates: context.localizationDelegates,
-      debugShowCheckedModeBanner: false,
-    );
+  debugShowCheckedModeBanner: false,
+  locale: context.locale,
+  supportedLocales: context.supportedLocales,
+  localizationsDelegates: context.localizationDelegates,
+  home: const HomePage(),
+);
+
   }
+}*/
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+
+  runApp(
+    EasyLocalization(
+      supportedLocales: const [
+        Locale('en'),
+        Locale('tr'),
+      ],
+      path: 'assets/lang',
+      fallbackLocale: const Locale('en'),
+      child: const HomePage(),
+    ),
+  );
 }
+
 
 
 
