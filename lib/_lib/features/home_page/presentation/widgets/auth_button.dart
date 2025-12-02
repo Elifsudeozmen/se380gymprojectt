@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:gymproject/_lib/features/profile_page/presentation/profile_page.dart';
-import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
 
 class AuthButtons extends StatelessWidget {
-  const AuthButtons({super.key});
+  final VoidCallback onSignIn;
+
+  const AuthButtons({super.key, required this.onSignIn});
 
   @override
   Widget build(BuildContext context) {
@@ -16,26 +17,16 @@ class AuthButtons extends StatelessWidget {
             foregroundColor: Colors.black,
             backgroundColor: const Color.fromARGB(255, 48, 122, 207),
           ),
-         onPressed: () {
-          Navigator.push(
-           context,
-           MaterialPageRoute(
-            builder: (context) => const ProfilePage(),
-      ),
-      );
-    },
-
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ProfilePage()),
+            );
+          },
           child: Text('Sign_Up'.tr()),
         ),
         ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-           context,
-           MaterialPageRoute(
-            builder: (context) => const RegistrationPage(),
-      ),
-      );
-          },
+          onPressed: onSignIn, // login metodu buraya bağlandı
           child: Text('Sign_In'.tr()),
         ),
       ],

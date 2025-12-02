@@ -83,6 +83,7 @@ class ProfilePage extends StatelessWidget {
 import 'package:flutter/material.dart';
 import 'package:gymproject/_lib/features/home_page/presentation/home_page.dart';
 import 'package:gymproject/_lib/features/profile_page/presentation/services/auth_service.dart';
+import 'package:gymproject/_lib/features/profile_page/presentation/widgets/email_field.dart';
 import 'package:gymproject/_lib/features/profile_page/presentation/widgets/profile_datefield.dart';
 import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
 import 'widgets/profile_avatar.dart';
@@ -107,6 +108,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final passCtrl = TextEditingController();
   final confirmCtrl = TextEditingController();
   final usernameCtrl = TextEditingController();
+  final emailCtrl = TextEditingController();
 
   String? selectedGender; // dropdown için
 
@@ -120,6 +122,7 @@ class _ProfilePageState extends State<ProfilePage> {
     passCtrl.dispose();
     confirmCtrl.dispose();
     usernameCtrl.dispose();
+    emailCtrl.dispose();
 
     super.dispose();
   }
@@ -156,9 +159,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 const ProfileAvatar(),
                 const SizedBox(height: 20),
 
+                EmailField(controller: emailCtrl),
+                UsernameField(controller: usernameCtrl),
                 ProfileTextField(label: "Name", controller: nameCtrl),
                 ProfileTextField(label: "Surname", controller: surnameCtrl),
-                UsernameField(controller: usernameCtrl),
 
                 ProfileDateField(label: "Birth Date", controller: birthCtrl),
 
@@ -219,6 +223,7 @@ class _ProfilePageState extends State<ProfilePage> {
         surnameCtrl.text.isEmpty ||
         birthCtrl.text.isEmpty ||
         selectedGender == null ||
+        emailCtrl.text.isEmpty ||
         passCtrl.text.isEmpty ||
         confirmCtrl.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -251,6 +256,7 @@ class _ProfilePageState extends State<ProfilePage> {
       height: heightCtrl.text.trim(),
       weight: weightCtrl.text.trim(),
       password: passCtrl.text.trim(),
+      email: emailCtrl.text.trim(),
     );
     if (error != null) {
       ScaffoldMessenger.of(

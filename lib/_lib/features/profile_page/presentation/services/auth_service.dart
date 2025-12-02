@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
+  /// Kullanıcı kaydı
   Future<String?> registerUser({
     required String username,
     required String name,
@@ -11,9 +14,11 @@ class AuthService {
     required String gender,
     required String height,
     required String weight,
+    required String email,
     required String password,
   }) async {
     try {
+      // 1️⃣ Username kontrolü
       var query = await _db
           .collection('users')
           .where('username', isEqualTo: username)
@@ -22,7 +27,12 @@ class AuthService {
         return "Username already exists!";
       }
 
-      await _db.collection('users').add({
+      // 2️⃣ Email + password ile Firebase Auth kaydı
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      // 3️⃣ Firestore’a profil bilgilerini kaydet
+      await _db.collection('users').doc(userCredential.user!.uid).set({
         'username': username,
         'name': name,
         'surname': surname,
@@ -30,10 +40,14 @@ class AuthService {
         'gender': gender,
         'height': height,
         'weight': weight,
-        'password': password,
+        'email': email,
+        'createdAt': FieldValue.serverTimestamp(),
       });
 
-      return null;
+      return null; // kayıt başarılı
+    } on FirebaseAuthException catch (e) {
+      // Auth hataları (ör: email zaten kayıtlı)
+      return e.message;
     } catch (e) {
       return e.toString();
     }
