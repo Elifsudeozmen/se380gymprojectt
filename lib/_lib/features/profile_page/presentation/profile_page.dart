@@ -82,12 +82,14 @@ class ProfilePage extends StatelessWidget {
 }*/
 import 'package:flutter/material.dart';
 import 'package:gymproject/_lib/features/home_page/presentation/home_page.dart';
+import 'package:gymproject/_lib/features/profile_page/presentation/services/auth_service.dart';
 import 'package:gymproject/_lib/features/profile_page/presentation/widgets/profile_datefield.dart';
 import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
 import 'widgets/profile_avatar.dart';
 import 'widgets/profile_textfield.dart';
 import 'widgets/password_field.dart';
 import 'widgets/signup_button.dart';
+import 'widgets/username_field.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -104,6 +106,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final weightCtrl = TextEditingController();
   final passCtrl = TextEditingController();
   final confirmCtrl = TextEditingController();
+  final usernameCtrl = TextEditingController();
 
   String? selectedGender; // dropdown için
 
@@ -116,6 +119,8 @@ class _ProfilePageState extends State<ProfilePage> {
     weightCtrl.dispose();
     passCtrl.dispose();
     confirmCtrl.dispose();
+    usernameCtrl.dispose();
+
     super.dispose();
   }
 
@@ -126,8 +131,10 @@ class _ProfilePageState extends State<ProfilePage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 30.0,
+              vertical: 20.0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -137,7 +144,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const HomePage()),
+                        MaterialPageRoute(
+                          builder: (context) => const HomePage(),
+                        ),
                       );
                     },
                     icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
@@ -149,6 +158,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
                 ProfileTextField(label: "Name", controller: nameCtrl),
                 ProfileTextField(label: "Surname", controller: surnameCtrl),
+                UsernameField(controller: usernameCtrl),
+
                 ProfileDateField(label: "Birth Date", controller: birthCtrl),
 
                 DropdownButtonFormField<String>(
@@ -161,8 +172,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       borderRadius: BorderRadius.circular(20),
                       borderSide: BorderSide.none,
                     ),
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 15,
+                    ),
                   ),
                   value: selectedGender,
                   items: const [
@@ -176,15 +189,22 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
 
                 const SizedBox(height: 10),
-                ProfileTextField(label: "Height (opt.)", controller: heightCtrl),
-                ProfileTextField(label: "Weight (opt.)", controller: weightCtrl),
+                ProfileTextField(
+                  label: "Height (opt.)",
+                  controller: heightCtrl,
+                ),
+                ProfileTextField(
+                  label: "Weight (opt.)",
+                  controller: weightCtrl,
+                ),
                 PasswordField(label: "Password", controller: passCtrl),
-                PasswordField(label: "Confirm Password", controller: confirmCtrl),
+                PasswordField(
+                  label: "Confirm Password",
+                  controller: confirmCtrl,
+                ),
 
                 const SizedBox(height: 20),
-                SignUpButton(
-                  onPressed: validateAndSubmit,
-                ),
+                SignUpButton(onPressed: validateAndSubmit),
               ],
             ),
           ),
@@ -193,8 +213,9 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  void validateAndSubmit() {
+  void validateAndSubmit() async {
     if (nameCtrl.text.isEmpty ||
+        usernameCtrl.text.isEmpty ||
         surnameCtrl.text.isEmpty ||
         birthCtrl.text.isEmpty ||
         selectedGender == null ||
@@ -218,6 +239,23 @@ class _ProfilePageState extends State<ProfilePage> {
           margin: EdgeInsets.all(20),
         ),
       );
+      return;
+    }
+    final authService = AuthService();
+    String? error = await authService.registerUser(
+      username: usernameCtrl.text.trim(),
+      name: nameCtrl.text.trim(),
+      surname: surnameCtrl.text.trim(),
+      birthDate: birthCtrl.text.trim(),
+      gender: selectedGender!,
+      height: heightCtrl.text.trim(),
+      weight: weightCtrl.text.trim(),
+      password: passCtrl.text.trim(),
+    );
+    if (error != null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error)));
       return;
     }
 
