@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:gymproject/_lib/features/home_page/presentation/widgets/auth_button.dart';
 import 'package:gymproject/_lib/features/home_page/services/auth_service.dart';
+import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
 import '../presentation/widgets/profile_avatar.dart';
 import '../presentation/widgets/username_field.dart';
 import '../presentation/widgets/password_field.dart';
@@ -52,8 +53,11 @@ class _HomePageState extends State<HomePage> {
         margin: EdgeInsets.all(20),
       ),
     );
-
-    // Navigator.push(...); // başka sayfaya geçiş
+             Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const RegistrationPage()),
+            );
+          
   }
 
   @override

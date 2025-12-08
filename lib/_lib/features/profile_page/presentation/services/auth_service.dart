@@ -18,7 +18,7 @@ class AuthService {
     required String password,
   }) async {
     try {
-      // 1️⃣ Username kontrolü
+      //  Kullanıcı adı benzersizliğini kontrol et
       var query = await _db
           .collection('users')
           .where('username', isEqualTo: username)
@@ -27,11 +27,11 @@ class AuthService {
         return "Username already exists!";
       }
 
-      // 2️⃣ Email + password ile Firebase Auth kaydı
+      //  Email + password ile Firebase Auth kaydı
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      // 3️⃣ Firestore’a profil bilgilerini kaydet
+      // Firestore’a profil bilgilerini kaydet
       await _db.collection('users').doc(userCredential.user!.uid).set({
         'username': username,
         'name': name,
