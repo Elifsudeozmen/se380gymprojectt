@@ -9,19 +9,31 @@ class EmailField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      cursorColor: Colors.black,
       decoration: InputDecoration(
-        labelText: "Email",
-        filled: true,
-        fillColor: const Color(0xFFFFD8B5),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide.none,
+         hintText: "Email",
+        hintStyle: TextStyle(
+          fontSize: 14,
+          color: Colors.grey.shade600,
         ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 15,
+        enabledBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.black,
+            width: 1,
+          ),
+        ),
+        focusedBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.black,
+            width: 1.2,
+          ),
         ),
       ),
+      style: const TextStyle(
+        fontSize: 16,
+        color: Colors.black,
+      ),
     );
+        
   }
 }

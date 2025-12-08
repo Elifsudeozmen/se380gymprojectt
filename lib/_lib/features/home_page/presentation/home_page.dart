@@ -6,7 +6,6 @@ import 'package:gymproject/_lib/features/registration_page/presentation/registra
 import '../presentation/widgets/profile_avatar.dart';
 import '../presentation/widgets/username_field.dart';
 import '../presentation/widgets/password_field.dart';
-import '../presentation/widgets/language_button.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -97,7 +96,6 @@ class _HomePageState extends State<HomePage> {
                 onSignIn: login, // artık login metodu çağrılıyor
               ),
               const SizedBox(height: 30),
-              const LanguageButtons(),
             ],
           ),
         ),
