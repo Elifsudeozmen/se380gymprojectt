@@ -23,26 +23,35 @@ class _PasswordFieldState extends State<PasswordField> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
-        controller: internalController,
-        obscureText: _obscure,
-        decoration: InputDecoration(
-          labelText: widget.label,
-          filled: true,
-          fillColor: const Color(0xFFFFD8B5),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide.none,
+    return TextField(
+      controller: internalController,
+      obscureText: _obscure,
+      cursorColor: Colors.black,
+      decoration: InputDecoration(
+        hintText: widget.label,
+        hintStyle: TextStyle(
+          fontSize: 14,
+          color: Colors.grey.shade600,
+        ),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _obscure ? Icons.visibility_off : Icons.visibility,
+            color: Colors.black,
           ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          suffixIcon: IconButton(
-            icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
-            onPressed: () => setState(() => _obscure = !_obscure),
-          ),
+          onPressed: () {
+            setState(() {
+              _obscure = !_obscure;
+            });
+          },
+        ),
+        enabledBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.black, width: 1),
+        ),
+        focusedBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.black, width: 1.2),
         ),
       ),
+      style: const TextStyle(fontSize: 16, color: Colors.black),
     );
   }
 

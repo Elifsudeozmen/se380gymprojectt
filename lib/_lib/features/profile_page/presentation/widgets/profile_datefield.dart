@@ -41,30 +41,31 @@ class _ProfileDateFieldState extends State<ProfileDateField> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
-        controller: internalController,
-        readOnly: true,
-        onTap: _pickDate,
-        decoration: InputDecoration(
-          labelText: widget.label,
-          filled: true,
-          fillColor: const Color(0xFFFFD8B5),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide.none,
-          ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          suffixIcon: const Icon(Icons.calendar_month),
+    return TextField(
+      controller: internalController,
+      readOnly: true,
+      cursorColor: Colors.black,
+      decoration: InputDecoration(
+        hintText: widget.label,
+        hintStyle: TextStyle(
+          fontSize: 14,
+          color: Colors.grey.shade600,
+        ),
+        suffixIcon: const Icon(Icons.calendar_today, color: Colors.black),
+        enabledBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.black, width: 1),
+        ),
+        focusedBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.black, width: 1.2),
         ),
       ),
+      style: const TextStyle(fontSize: 16, color: Colors.black),
+      onTap: _pickDate,
     );
   }
 
   @override
   void dispose() {
-    // Eğer dışarıdan controller verilmediyse internalController bizim oluşturduğumuz.
     if (widget.controller == null) {
       internalController.dispose();
     }

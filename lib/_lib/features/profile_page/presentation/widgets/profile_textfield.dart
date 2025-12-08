@@ -16,25 +16,26 @@ class ProfileTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
-        controller: controller,
-        keyboardType: isNumberOnly ? TextInputType.number : TextInputType.text,
-        inputFormatters:
-            isNumberOnly ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly] : null,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: const TextStyle(color: Colors.black87),
-          filled: true,
-          fillColor: const Color(0xFFFFD8B5),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide.none,
-          ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+    return TextField(
+      controller: controller,
+      keyboardType: isNumberOnly ? TextInputType.number : TextInputType.text,
+      cursorColor: Colors.black,
+      inputFormatters:
+          isNumberOnly ? [FilteringTextInputFormatter.digitsOnly] : null,
+      decoration: InputDecoration(
+        hintText: label,
+        hintStyle: TextStyle(
+          fontSize: 14,
+          color: Colors.grey.shade600,
+        ),
+        enabledBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.black, width: 1),
+        ),
+        focusedBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.black, width: 1.2),
         ),
       ),
+      style: const TextStyle(fontSize: 16, color: Colors.black),
     );
   }
 }
