@@ -11,10 +11,14 @@ class UsernameField extends StatelessWidget {
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-          labelText: "Username",
-          fillColor: const Color.fromARGB(255, 236, 172, 193),
-          filled: true,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+          hintText: "Username",
+          hintStyle: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+          enabledBorder: const UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.black, width: 1),
+          ),
+          focusedBorder: const UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.black, width: 1.2),
+          ),
         ),
       ),
     );

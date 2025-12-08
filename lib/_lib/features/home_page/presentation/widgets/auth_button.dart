@@ -11,10 +11,15 @@ class AuthButtons extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.black,
-            backgroundColor: const Color.fromARGB(255, 48, 122, 207),
+        OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            //side: const BorderSide(color: Colors.black, width: 1),
+            padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 15),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            foregroundColor: const Color.fromARGB(255, 255, 255, 255),
+            backgroundColor: Colors.black,
           ),
           onPressed: () {
             Navigator.push(
@@ -22,11 +27,20 @@ class AuthButtons extends StatelessWidget {
               MaterialPageRoute(builder: (context) => const ProfilePage()),
             );
           },
-          child: Text("Sign Up"),
+          child: const Text("Sign Up"),
         ),
-        ElevatedButton(
-          onPressed: onSignIn, // login metodu buraya bağlandı
-          child: Text("Sign In"),
+        OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            //side: const BorderSide(color: Colors.black, width: 1),
+            padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 15),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            backgroundColor: Colors.black,
+            foregroundColor: const Color.fromARGB(255, 255, 255, 255),
+          ),
+          onPressed: onSignIn,
+          child: const Text("Sign In"),
         ),
       ],
     );

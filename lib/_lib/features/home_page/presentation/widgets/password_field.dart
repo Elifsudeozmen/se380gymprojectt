@@ -12,10 +12,14 @@ class PasswordField extends StatelessWidget {
         controller: controller,
         obscureText: true,
         decoration: InputDecoration(
-          labelText: "Password",
-          fillColor: const Color.fromARGB(255, 236, 172, 193),
-          filled: true,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+          hintText: "Password",
+          hintStyle: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+          enabledBorder: const UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.black, width: 1),
+          ),
+          focusedBorder: const UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.black, width: 1.2),
+          ),
         ),
       ),
     );

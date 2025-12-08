@@ -51,11 +51,10 @@ class _HomePageState extends State<HomePage> {
         margin: EdgeInsets.all(20),
       ),
     );
-             Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const RegistrationPage()),
-            );
-          
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const RegistrationPage()),
+    );
   }
 
   @override
@@ -63,23 +62,13 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Gym Tracker"),
-        leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
+        automaticallyImplyLeading: false,
         centerTitle: true,
-        backgroundColor: Colors.greenAccent,
-        foregroundColor: Colors.black,
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
+        foregroundColor: const Color.fromARGB(255, 255, 254, 254),
+
         toolbarHeight: 70,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(25),
-            bottomRight: Radius.circular(25),
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.language_rounded),
-          ),
-        ],
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
       ),
       body: Center(
         child: SingleChildScrollView(
