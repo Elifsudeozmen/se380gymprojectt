@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class PasswordField extends StatelessWidget {
   final TextEditingController controller;
@@ -13,7 +12,7 @@ class PasswordField extends StatelessWidget {
         controller: controller,
         obscureText: true,
         decoration: InputDecoration(
-          labelText: 'Password'.tr(),
+          labelText: "Password",
           fillColor: const Color.fromARGB(255, 236, 172, 193),
           filled: true,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),

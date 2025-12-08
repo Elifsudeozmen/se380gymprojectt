@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:gymproject/_lib/features/profile_page/presentation/profile_page.dart';
 
 class AuthButtons extends StatelessWidget {
@@ -23,11 +22,11 @@ class AuthButtons extends StatelessWidget {
               MaterialPageRoute(builder: (context) => const ProfilePage()),
             );
           },
-          child: Text('Sign_Up'.tr()),
+          child: Text("Sign Up"),
         ),
         ElevatedButton(
           onPressed: onSignIn, // login metodu buraya bağlandı
-          child: Text('Sign_In'.tr()),
+          child: Text("Sign In"),
         ),
       ],
     );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:gymproject/_lib/features/home_page/presentation/widgets/auth_button.dart';
 import 'package:gymproject/_lib/features/home_page/services/auth_service.dart';
 import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
@@ -63,7 +62,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('GymTracker'.tr()),
+        title: Text("Gym Tracker"),
         leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
         centerTitle: true,
         backgroundColor: Colors.greenAccent,
