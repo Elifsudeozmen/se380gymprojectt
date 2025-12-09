@@ -3,7 +3,7 @@ import 'package:gymproject/_lib/features/weight_track_page/business/weight_model
 import 'package:gymproject/_lib/features/weight_track_page/data/weight_service.dart';
 import 'package:gymproject/_lib/features/weight_track_page/presentation/widgets/track_panel.dart';
 import 'package:gymproject/_lib/features/weight_track_page/presentation/widgets/weight_control.dart';
-//import 'package:lottie/lottie.dart';
+import 'package:lottie/lottie.dart';
 
 
 
@@ -61,10 +61,10 @@ class _WeightPageState extends State<WeightTrackPage> {
                     const SizedBox(height: 40),
 
                     // Animation
-                    /*Lottie.asset(
-                      "assets/animations/bmi.json",
+                    Lottie.asset(
+                      "assets/animations/Weight scale.json",
                       height: 160,
-                    ),*/
+                    ),
 
                     const SizedBox(height: 32),
 
