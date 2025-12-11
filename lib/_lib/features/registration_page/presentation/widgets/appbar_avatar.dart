@@ -6,9 +6,13 @@ class AppBarAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const CircleAvatar(
-      backgroundColor: Color.fromARGB(255, 152, 240, 242),
+      backgroundColor: Colors.black12,
       radius: 17,
-      child: Icon(Icons.person, color: Colors.lightGreenAccent),
+      child: Icon(
+        Icons.person, 
+        color: Colors.black87,
+        size: 20,
+        ),
     );
   }
 }
