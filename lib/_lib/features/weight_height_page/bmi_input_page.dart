@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gymproject/_lib/features/weight_height_page/widgets/bmi_label.dart';
 import 'package:gymproject/_lib/features/weight_height_page/widgets/bmi_input_field.dart';
 import 'package:gymproject/_lib/features/weight_height_page/widgets/bmi_calculate_button.dart';
-import 'package:gymproject/_lib/features/weight_height_page/widgets/bmi_theme_toggle.dart';
+import 'package:gymproject/_lib/features/dark_light_theme/theme_toggle.dart';
 
 class BmiInputPage extends StatefulWidget {
   const BmiInputPage({super.key});
@@ -69,7 +69,7 @@ class _BmiInputPageState extends State<BmiInputPage> {
 
             const SizedBox(height: 40),
 
-            BmiThemeToggle(
+            ThemeToggle(
               isDarkMode: isDarkMode,
               textColor: textColor,
               onChanged: (value) {

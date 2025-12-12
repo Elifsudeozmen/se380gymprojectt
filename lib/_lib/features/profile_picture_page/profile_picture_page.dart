@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymproject/_lib/features/profile_picture_page/widgets/profile_avatar.dart';
 import 'package:gymproject/_lib/features/profile_picture_page/widgets/profile_buttons.dart';
-import 'package:gymproject/_lib/features/profile_picture_page/widgets/theme_toggle.dart';
+import 'package:gymproject/_lib/features/dark_light_theme/theme_toggle.dart';
 import 'package:gymproject/_lib/features/profile_picture_page/widgets/fullscreen_image.dart';
 
 class ProfilePicturePage extends StatefulWidget {
