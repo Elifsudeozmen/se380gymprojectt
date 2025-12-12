@@ -3,6 +3,7 @@ import 'package:gymproject/_lib/features/profile_picture_page/widgets/profile_av
 import 'package:gymproject/_lib/features/profile_picture_page/widgets/profile_buttons.dart';
 import 'package:gymproject/_lib/features/dark_light_theme/theme_toggle.dart';
 import 'package:gymproject/_lib/features/profile_picture_page/widgets/fullscreen_image.dart';
+import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
 
 class ProfilePicturePage extends StatefulWidget {
   const ProfilePicturePage({super.key});
@@ -21,11 +22,25 @@ class _ProfilePageState extends State<ProfilePicturePage> {
 
     return Scaffold(
       backgroundColor: background,
+  appBar: AppBar(
+        backgroundColor: background,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: textColor),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const RegistrationPage()),
+            );
+          },
+        ),
+      ),
+
       body: SafeArea(
         child: Center(
           child: Column(
             children: [
-              const SizedBox(height: 50),
+              const SizedBox(height: 20),
 
               ProfileAvatar(
                 isDark: isDarkMode,
@@ -39,6 +54,7 @@ class _ProfilePageState extends State<ProfilePicturePage> {
                   );
                 },
               ),
+
 
               const SizedBox(height: 40),
 

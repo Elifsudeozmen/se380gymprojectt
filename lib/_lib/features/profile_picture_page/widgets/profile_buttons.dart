@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymproject/_lib/features/profile_page/presentation/profile_page.dart';
 
 class ProfileButtons extends StatelessWidget {
   final Color textColor;
@@ -9,7 +10,26 @@ class ProfileButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _buildButton("Edit Profile", textColor),
+        SizedBox(
+          width: 250,
+          child: OutlinedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
+              );
+            },
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(color: textColor, width: 1.4),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+            ),
+            child: Text(
+              "Edit Profile",
+              style: TextStyle(fontSize: 16, letterSpacing: 0.5, color: textColor),
+            ),
+          ),
+        ),
         const SizedBox(height: 20),
         _buildButton("Log Out", textColor),
       ],
