@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gymproject/_lib/features/registration_page/data/date_utils.dart';
 import '../../data/services/appointment_service.dart';
 import '../../data/dto/appointment_dto.dart';
 
@@ -15,7 +14,6 @@ class DayOption extends StatefulWidget {
 
 class _DayOptionState extends State<DayOption> {
   final AppointmentService service = AppointmentService();
-
   bool _isSubmitting = false;
 
   final List<String> timeOptions = [
@@ -28,6 +26,17 @@ class _DayOptionState extends State<DayOption> {
     '20:00 - 22:00',
     '22:00 - 00:00',
   ];
+
+  /// 🔒 Slot geçmiş mi?
+  bool _isPastSlot(DateTime date, String timeSlot) {
+    final now = DateTime.now();
+
+    final startHour = int.parse(timeSlot.split(':')[0]);
+
+    final slotDateTime = DateTime(date.year, date.month, date.day, startHour);
+
+    return slotDateTime.isBefore(now);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +53,11 @@ class _DayOptionState extends State<DayOption> {
 
             final male = list.where((e) => e.gender == 'Male').length;
             final female = list.where((e) => e.gender == 'Female').length;
-
             final total = list.length;
             final percent = total / AppointmentService.maxCapacity;
+
+            final isPast = _isPastSlot(widget.date, time);
+            final isFull = total >= AppointmentService.maxCapacity;
 
             return ListTile(
               title: Text(time),
@@ -61,21 +72,33 @@ class _DayOptionState extends State<DayOption> {
                     '$total / ${AppointmentService.maxCapacity} '
                     '(%${(percent * 100).toStringAsFixed(0)})',
                   ),
+                  if (isPast)
+                    const Padding(
+                      padding: EdgeInsets.only(top: 4),
+                      child: Text(
+                        '⏳ This time slot has passed',
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
+                    ),
                 ],
               ),
-              trailing: IconButton(
-                icon: _isSubmitting
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.add_circle_outline),
-                onPressed:
-                    (_isSubmitting || total >= AppointmentService.maxCapacity)
-                    ? null
-                    : () => _showConfirmDialog(time),
-              ),
+              trailing: _isSubmitting
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : IconButton(
+                      icon: Icon(
+                        isPast || isFull
+                            ? Icons.lock_outline
+                            : Icons.add_circle_outline,
+                        color: isPast || isFull ? Colors.grey : null,
+                      ),
+                      onPressed: (isPast || isFull || _isSubmitting)
+                          ? null
+                          : () => _showConfirmDialog(time),
+                    ),
             );
           },
         );
@@ -109,7 +132,7 @@ class _DayOptionState extends State<DayOption> {
     );
   }
 
-  //
+  // 🔹 GERÇEK KAYIT
   Future<void> _createAppointment(String time) async {
     if (_isSubmitting) return;
 
@@ -117,9 +140,9 @@ class _DayOptionState extends State<DayOption> {
 
     try {
       final appointment = AppointmentDto(
-        userId: 'CURRENT_USER_ID', // sonra FirebaseAuth
-        gender: 'Female', // sonra Firestore
-        date: DateUtilsHelper.normalize(widget.date),
+        userId: 'CURRENT_USER_ID', // 🔜 FirebaseAuth
+        gender: 'Female', // 🔜 users collection
+        date: widget.date,
         day: widget.day,
         timeSlot: time,
         createdAt: DateTime.now(),
@@ -131,14 +154,18 @@ class _DayOptionState extends State<DayOption> {
 
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Appointment created')));
+      ).showSnackBar(const SnackBar(content: Text('✅ Appointment created')));
     } catch (e) {
       if (!mounted) return;
+
       String message = 'Something went wrong';
+
       if (e.toString().contains('User already has an appointment')) {
         message = '⚠️ You already have an appointment for this time slot';
       } else if (e.toString().contains('Capacity full')) {
         message = '❌ This time slot is full';
+      } else if (e.toString().contains('Past appointment')) {
+        message = '⏳ You cannot book past time slots';
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
