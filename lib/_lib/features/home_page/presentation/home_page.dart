@@ -51,10 +51,6 @@ class _HomePageState extends State<HomePage> {
         margin: EdgeInsets.all(20),
       ),
     );
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const RegistrationPage()),
-    );
   }
 
   @override

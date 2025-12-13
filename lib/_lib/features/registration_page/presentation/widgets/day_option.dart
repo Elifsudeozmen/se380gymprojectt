@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
+import '../../data/services/appointment_service.dart';
+import '../../data/dto/appointment_dto.dart';
 
 class DayOption extends StatefulWidget {
   final String day;
-  const DayOption({super.key, required this.day});
+  final DateTime date;
+
+  const DayOption({super.key, required this.day, required this.date});
 
   @override
   State<DayOption> createState() => _DayOptionState();
 }
 
 class _DayOptionState extends State<DayOption> {
-  bool isExpanded = false;
+  final AppointmentService service = AppointmentService();
+
+  bool _isSubmitting = false;
+
   final List<String> timeOptions = [
     '8:00 - 10:00',
     '10:00 - 12:00',
@@ -26,46 +33,120 @@ class _DayOptionState extends State<DayOption> {
     return ExpansionTile(
       title: Text(
         widget.day,
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
-      initiallyExpanded: isExpanded,
-      onExpansionChanged: (expanded) {
-        setState(() => isExpanded = expanded);
-      },
-      children: timeOptions.map((option) {
-        return ListTile(
-          title: Text(option),
-          trailing: IconButton(
-            icon: const Icon(Icons.add_circle_outline),
-            onPressed: () => _openConfirmDialog(context, option),
-          ),
+      children: timeOptions.map((time) {
+        return StreamBuilder<List<AppointmentDto>>(
+          stream: service.getAppointments(widget.date, time),
+          builder: (context, snapshot) {
+            final list = snapshot.data ?? [];
+
+            final male = list.where((e) => e.gender == 'Male').length;
+            final female = list.where((e) => e.gender == 'Female').length;
+
+            final total = list.length;
+            final percent = total / AppointmentService.maxCapacity;
+
+            return ListTile(
+              title: Text(time),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('👩 Female: $female   👨 Male: $male'),
+                  const SizedBox(height: 4),
+                  LinearProgressIndicator(value: percent),
+                  const SizedBox(height: 4),
+                  Text(
+                    '$total / ${AppointmentService.maxCapacity} '
+                    '(%${(percent * 100).toStringAsFixed(0)})',
+                  ),
+                ],
+              ),
+              trailing: IconButton(
+                icon: _isSubmitting
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.add_circle_outline),
+                onPressed:
+                    (_isSubmitting || total >= AppointmentService.maxCapacity)
+                    ? null
+                    : () => _showConfirmDialog(time),
+              ),
+            );
+          },
         );
       }).toList(),
     );
   }
 
-  void _openConfirmDialog(BuildContext context, String time) {
+  // 🔹 ONAY DIALOG
+  void _showConfirmDialog(String time) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirmation'),
-        content: Text('Are you sure you want to register to the $time?'),
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Confirm Appointment'),
+        content: Text(
+          '${widget.day} • $time\n\nAre you sure you want to book this appointment?',
+        ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: const Text('Cancel'),
           ),
-          TextButton(
+          ElevatedButton(
             onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Registered to $time')),
-              );
+              Navigator.pop(dialogContext);
+              _createAppointment(time);
             },
             child: const Text('Yes'),
           ),
         ],
       ),
     );
+  }
+
+  //
+  Future<void> _createAppointment(String time) async {
+    if (_isSubmitting) return;
+
+    setState(() => _isSubmitting = true);
+
+    try {
+      final appointment = AppointmentDto(
+        userId: 'CURRENT_USER_ID', // sonra FirebaseAuth
+        gender: 'Female', // sonra Firestore
+        date: widget.date,
+        day: widget.day,
+        timeSlot: time,
+        createdAt: DateTime.now(),
+      );
+
+      await service.createAppointment(appointment);
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Appointment created')));
+    } catch (e) {
+      if (!mounted) return;
+      String message = 'Something went wrong';
+      if (e.toString().contains('User already has an appointment')) {
+        message = '⚠️ You already have an appointment for this time slot';
+      } else if (e.toString().contains('Capacity full')) {
+        message = '❌ This time slot is full';
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message), backgroundColor: Colors.red),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+      }
+    }
   }
 }
