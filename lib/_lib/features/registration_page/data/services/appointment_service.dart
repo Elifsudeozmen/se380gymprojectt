@@ -6,10 +6,17 @@ class AppointmentService {
 
   static const int maxCapacity = 15;
 
+  /// 🔒 Tarihi normalize et (saat/dakika sıfırla)
+  DateTime _normalizeDate(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
+  }
+
   Stream<List<AppointmentDto>> getAppointments(DateTime date, String timeSlot) {
+    final normalizedDate = _normalizeDate(date);
+
     return _firestore
         .collection('appointments')
-        .where('date', isEqualTo: Timestamp.fromDate(date))
+        .where('date', isEqualTo: Timestamp.fromDate(normalizedDate))
         .where('timeSlot', isEqualTo: timeSlot)
         .snapshots()
         .map(
@@ -22,10 +29,12 @@ class AppointmentService {
   Future<void> createAppointment(AppointmentDto dto) async {
     final appointmentsRef = _firestore.collection('appointments');
 
-    // aynı user aynı slotu almasın
+    final normalizedDate = _normalizeDate(dto.date);
+
+    // 1️⃣ Aynı user aynı slotu almasın
     final userCheck = await appointmentsRef
         .where('userId', isEqualTo: dto.userId)
-        .where('date', isEqualTo: Timestamp.fromDate(dto.date))
+        .where('date', isEqualTo: Timestamp.fromDate(normalizedDate))
         .where('timeSlot', isEqualTo: dto.timeSlot)
         .limit(1)
         .get();
@@ -34,9 +43,9 @@ class AppointmentService {
       throw Exception('User already has an appointment');
     }
 
-    //kapasite
+    // 2️⃣ Kapasite kontrolü
     final capacityCheck = await appointmentsRef
-        .where('date', isEqualTo: Timestamp.fromDate(dto.date))
+        .where('date', isEqualTo: Timestamp.fromDate(normalizedDate))
         .where('timeSlot', isEqualTo: dto.timeSlot)
         .get();
 
@@ -44,6 +53,9 @@ class AppointmentService {
       throw Exception('Capacity full');
     }
 
-    await appointmentsRef.add(dto.toMap());
+    // 3️⃣ Normalize edilmiş tarih ile kayıt
+    final normalizedDto = dto.copyWith(date: normalizedDate);
+
+    await appointmentsRef.add(normalizedDto.toMap());
   }
 }

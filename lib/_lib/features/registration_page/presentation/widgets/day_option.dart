@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymproject/_lib/features/registration_page/data/date_utils.dart';
 import '../../data/services/appointment_service.dart';
 import '../../data/dto/appointment_dto.dart';
 
@@ -118,7 +119,7 @@ class _DayOptionState extends State<DayOption> {
       final appointment = AppointmentDto(
         userId: 'CURRENT_USER_ID', // sonra FirebaseAuth
         gender: 'Female', // sonra Firestore
-        date: widget.date,
+        date: DateUtilsHelper.normalize(widget.date),
         day: widget.day,
         timeSlot: time,
         createdAt: DateTime.now(),

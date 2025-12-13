@@ -16,6 +16,23 @@ class AppointmentDto {
     required this.timeSlot,
     required this.createdAt,
   });
+  AppointmentDto copyWith({
+    String? userId,
+    String? gender,
+    DateTime? date,
+    String? day,
+    String? timeSlot,
+    DateTime? createdAt,
+  }) {
+    return AppointmentDto(
+      userId: userId ?? this.userId,
+      gender: gender ?? this.gender,
+      date: date ?? this.date,
+      day: day ?? this.day,
+      timeSlot: timeSlot ?? this.timeSlot,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {
