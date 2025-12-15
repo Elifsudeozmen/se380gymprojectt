@@ -4,14 +4,14 @@ import 'package:gymproject/_lib/features/weight_height_page/widgets/bmi_input_fi
 import 'package:gymproject/_lib/features/weight_height_page/widgets/bmi_calculate_button.dart';
 import 'package:gymproject/_lib/features/dark_light_theme/theme_toggle.dart';
 
-class BmiInputPage extends StatefulWidget {
-  const BmiInputPage({super.key});
+class WeightHeightPage extends StatefulWidget {
+  const WeightHeightPage({super.key});
 
   @override
-  State<BmiInputPage> createState() => _BmiInputPageState();
+  State<WeightHeightPage> createState() => _WeightHeightPageState();
 }
 
-class _BmiInputPageState extends State<BmiInputPage> {
+class _WeightHeightPageState extends State<WeightHeightPage> {
   bool isDarkMode = false;
 
   final TextEditingController heightController = TextEditingController();

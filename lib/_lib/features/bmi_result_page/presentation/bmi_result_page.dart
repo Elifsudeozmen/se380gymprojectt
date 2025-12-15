@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gymproject/_lib/features/bmi_result_page/business/bmi_calculator.dart';
 import 'package:gymproject/_lib/features/bmi_result_page/data/bmi_repository.dart';
 import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
+import 'package:gymproject/_lib/features/weight_height_page/weight_height_page.dart';
 import 'package:gymproject/_lib/features/weight_track_page/weight_track_page.dart';
 
 
@@ -32,7 +33,7 @@ class BMIResultPage extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => WeightTrackPage()),// aslında height weight sayfasına gitmeli ama çıkmıyor???
+              MaterialPageRoute(builder: (_) => WeightHeightPage()),
             );
           },
         ),
@@ -60,7 +61,7 @@ class BMIResultPage extends StatelessWidget {
                 color: Colors.grey.shade300,
                 alignment: Alignment.center,
                 child: const Text(
-                  "IMAGE HERE",
+                  "assets/images/bmi_result.jpg",
                   style: TextStyle(color: Colors.black54),
                 ),
               ),
