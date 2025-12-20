@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 
 class BmiLabel extends StatelessWidget {
   final String text;
-  final Color textColor;
 
-  const BmiLabel({
-    super.key,
-    required this.text,
-    required this.textColor,
-  });
+  const BmiLabel({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
+    final textColor = Theme.of(context).colorScheme.onBackground;
+
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(

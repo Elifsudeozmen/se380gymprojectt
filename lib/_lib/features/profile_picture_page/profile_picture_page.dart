@@ -3,7 +3,9 @@ import 'package:gymproject/_lib/features/profile_picture_page/widgets/profile_av
 import 'package:gymproject/_lib/features/profile_picture_page/widgets/profile_buttons.dart';
 import 'package:gymproject/_lib/features/dark_light_theme/theme_toggle.dart';
 import 'package:gymproject/_lib/features/profile_picture_page/widgets/fullscreen_image.dart';
-import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
+
+import 'package:gymproject/_lib/theme_notifier.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePicturePage extends StatefulWidget {
   const ProfilePicturePage({super.key});
@@ -13,10 +15,11 @@ class ProfilePicturePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePicturePage> {
-  bool isDarkMode = false;
-
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeNotifier>();
+    final isDarkMode = theme.isDarkMode;
+
     final background = isDarkMode ? Colors.black : const Color(0xFFF7F1EB);
     final textColor = isDarkMode ? Colors.white : Colors.black;
 
@@ -63,7 +66,7 @@ class _ProfilePageState extends State<ProfilePicturePage> {
                 isDarkMode: isDarkMode,
                 textColor: textColor,
                 onChanged: (value) {
-                  setState(() => isDarkMode = value);
+                  context.read<ThemeNotifier>().toggle(value);
                 },
               ),
             ],

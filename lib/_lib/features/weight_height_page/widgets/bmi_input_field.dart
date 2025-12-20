@@ -3,19 +3,20 @@ import 'package:flutter/services.dart';
 
 class BmiInputField extends StatelessWidget {
   final TextEditingController controller;
-  final bool isDark;
 
-  const BmiInputField({
-    super.key,
-    required this.controller,
-    required this.isDark,
-  });
+  const BmiInputField({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
-    final fillColor = isDark ? const Color(0xFF2A2A2A) : Colors.white;
-    final borderColor = isDark ? Colors.white70 : Colors.black;
-    final textColor = isDark ? Colors.white : Colors.black;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final fillColor = isDark
+        ? const Color(0xFF2A2A2A)
+        : theme.colorScheme.surface;
+
+    final borderColor = theme.colorScheme.outline;
+    final textColor = theme.colorScheme.onSurface;
 
     return Container(
       margin: const EdgeInsets.only(top: 10),

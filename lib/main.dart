@@ -1,20 +1,26 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:gymproject/_lib/features/home_page/presentation/home_page.dart';
+import 'package:provider/provider.dart';
+
 import 'package:gymproject/_lib/features/home_page/services/auth_gate.dart';
+import 'package:gymproject/_lib/theme_notifier.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
 
   try {
     await Firebase.initializeApp();
-    print("firebase bağlandı");
+    print("Firebase bağlandı");
   } catch (e) {
-    print("firebase bağlanamadı");
+    print("Firebase bağlanamadı: $e");
   }
 
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeNotifier(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -22,8 +28,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.watch<ThemeNotifier>();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      themeMode: theme.themeMode,
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
       home: const AuthGate(),
     );
   }

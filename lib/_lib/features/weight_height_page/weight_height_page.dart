@@ -6,6 +6,8 @@ import 'package:gymproject/_lib/features/weight_height_page/widgets/bmi_input_fi
 import 'package:gymproject/_lib/features/weight_height_page/widgets/bmi_calculate_button.dart';
 import 'package:gymproject/_lib/features/dark_light_theme/theme_toggle.dart';
 import 'package:gymproject/_lib/features/weight_track_page/weight_track_page.dart';
+import 'package:provider/provider.dart';
+import 'package:gymproject/_lib/theme_notifier.dart';
 
 class WeightHeightPage extends StatefulWidget {
   const WeightHeightPage({super.key});
@@ -15,8 +17,6 @@ class WeightHeightPage extends StatefulWidget {
 }
 
 class _WeightHeightPageState extends State<WeightHeightPage> {
-  bool isDarkMode = false;
-
   final TextEditingController heightController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
   final BmiService _bmiService = BmiService();
@@ -30,10 +30,8 @@ class _WeightHeightPageState extends State<WeightHeightPage> {
 
   @override
   Widget build(BuildContext context) {
-    final background = isDarkMode
-        ? const Color(0xFF1B1B1B)
-        : const Color(0xFFFAF7F2);
-    final textColor = isDarkMode ? Colors.white : Colors.black;
+    final background = Theme.of(context).scaffoldBackgroundColor;
+    final textColor = Theme.of(context).colorScheme.onBackground;
 
     return Scaffold(
       backgroundColor: background,
@@ -47,7 +45,6 @@ class _WeightHeightPageState extends State<WeightHeightPage> {
             color: textColor,
             fontSize: 22,
             fontWeight: FontWeight.w600,
-            letterSpacing: 0.5,
           ),
         ),
         iconTheme: IconThemeData(color: textColor),
@@ -58,21 +55,17 @@ class _WeightHeightPageState extends State<WeightHeightPage> {
           children: [
             const SizedBox(height: 60),
 
-            // HEIGHT
-            BmiLabel(text: "HEIGHT", textColor: textColor),
-            BmiInputField(controller: heightController, isDark: isDarkMode),
+            BmiLabel(text: "HEIGHT"),
+            BmiInputField(controller: heightController),
 
             const SizedBox(height: 40),
 
-            // WEIGHT
-            BmiLabel(text: "WEIGHT", textColor: textColor),
-            BmiInputField(controller: weightController, isDark: isDarkMode),
+            BmiLabel(text: "WEIGHT"),
+            BmiInputField(controller: weightController),
 
             const SizedBox(height: 70),
 
-            // CALCULATE BUTTON
             BmiCalculateButton(
-              isDark: isDarkMode,
               onTap: () async {
                 final height = double.tryParse(heightController.text);
                 final weight = double.tryParse(weightController.text);
@@ -87,31 +80,20 @@ class _WeightHeightPageState extends State<WeightHeightPage> {
                   return;
                 }
 
-                try {
-                  await _bmiService.calculateAndSaveBmi(
-                    height: height,
-                    weight: weight,
-                  );
+                await _bmiService.calculateAndSaveBmi(
+                  height: height,
+                  weight: weight,
+                );
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('✅ BMI calculated and saved')),
-                  );
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          BMIResultPage(height: height, weight: weight),
-                    ),
-                  );
-                } catch (e) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(e.toString())));
-                }
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        BMIResultPage(height: height, weight: weight),
+                  ),
+                );
               },
             ),
-
-            const SizedBox(height: 40),
           ],
         ),
       ),

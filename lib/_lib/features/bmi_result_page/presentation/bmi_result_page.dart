@@ -1,13 +1,8 @@
-
- 
 import 'package:flutter/material.dart';
 import 'package:gymproject/_lib/features/bmi_result_page/business/bmi_calculator.dart';
 import 'package:gymproject/_lib/features/bmi_result_page/data/bmi_repository.dart';
-import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
 import 'package:gymproject/_lib/features/weight_height_page/weight_height_page.dart';
 import 'package:gymproject/_lib/features/weight_track_page/weight_track_page.dart';
-
-
 
 class BMIResultPage extends StatelessWidget {
   final double height;
@@ -17,6 +12,11 @@ class BMIResultPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final background = theme.scaffoldBackgroundColor;
+    final onBg = theme.colorScheme.onBackground;
+    final isDark = theme.brightness == Brightness.dark;
+
     final bmiRepo = BMIRepository();
     final bmiCalc = BMICalculator();
 
@@ -24,64 +24,57 @@ class BMIResultPage extends StatelessWidget {
     final message = bmiCalc.interpretBMI(bmiValue);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: background,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: background,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: onBg),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => WeightHeightPage()),
-            );
+            Navigator.pop(context);
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.home, color: Colors.black),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const RegistrationPage()),
-              );
-            },
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              // IMAGE — sen dolduracaksın
+              // IMAGE PLACEHOLDER
               Container(
                 height: 200,
                 width: double.infinity,
-                color: Colors.grey.shade300,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceVariant,
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 alignment: Alignment.center,
-                child: const Text(
+                child: Text(
                   "assets/images/bmi_result.jpg",
-                  style: TextStyle(color: Colors.black54),
+                  style: TextStyle(color: onBg.withOpacity(0.6)),
                 ),
               ),
 
               const SizedBox(height: 30),
 
-              // MESSAGE
+              // BMI RESULT CARD
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(10),
+                  color: isDark
+                      ? theme.colorScheme.surface
+                      : theme.colorScheme.primary,
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   children: [
                     Text(
                       "Your BMI: ${bmiValue.toStringAsFixed(1)}",
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: isDark
+                            ? theme.colorScheme.onSurface
+                            : theme.colorScheme.onPrimary,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -90,8 +83,10 @@ class BMIResultPage extends StatelessWidget {
                     Text(
                       message,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: isDark
+                            ? theme.colorScheme.onSurface
+                            : theme.colorScheme.onPrimary,
                         fontSize: 16,
                       ),
                     ),
@@ -101,15 +96,16 @@ class BMIResultPage extends StatelessWidget {
 
               const SizedBox(height: 40),
 
-              // BUTTON
+              // TRACK BUTTON
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: Colors.black,
+                    backgroundColor: theme.colorScheme.primary,
+                    foregroundColor: theme.colorScheme.onPrimary,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   onPressed: () {
@@ -122,7 +118,7 @@ class BMIResultPage extends StatelessWidget {
                   },
                   child: const Text(
                     "Track Your Weight",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    style: TextStyle(fontSize: 16),
                   ),
                 ),
               ),
@@ -133,5 +129,3 @@ class BMIResultPage extends StatelessWidget {
     );
   }
 }
-
-
