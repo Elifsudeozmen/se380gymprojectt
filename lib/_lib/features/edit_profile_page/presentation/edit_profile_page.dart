@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymproject/_lib/features/edit_profile_page/business/update_profile_usecase.dart';
 import 'package:gymproject/_lib/features/edit_profile_page/data/user_repository.dart';
+import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -25,9 +26,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
         passwordController.text.isEmpty ||
         heightController.text.isEmpty ||
         weightController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Please fill in all fields.")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Please fill in all fields.")));
       return;
     }
 
@@ -39,9 +40,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
       weightController.text,
     );
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Profile updated successfully!")),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text("Profile updated successfully!")));
   }
 
   @override
@@ -53,12 +54,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
         elevation: 0,
         title: Text(
           "Edit Profile",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.w700,
-          ),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
         ),
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
 
       body: Padding(
@@ -82,13 +86,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 onPressed: update,
-                child: Text(
-                  "UPDATE",
-                  style: TextStyle(color: Colors.white),
-                ),
+                child: Text("UPDATE", style: TextStyle(color: Colors.white)),
               ),
             ),
           ],
@@ -101,23 +103,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-            )),
+        Text(
+          label,
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+        ),
         const SizedBox(height: 6),
         Container(
           decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: .9),
-              borderRadius: BorderRadius.circular(8)),
+            border: Border.all(color: Colors.black, width: .9),
+            borderRadius: BorderRadius.circular(8),
+          ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: TextField(
               controller: controller,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-              ),
+              decoration: InputDecoration(border: InputBorder.none),
             ),
           ),
         ),
@@ -130,16 +130,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Change Password",
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-            )),
+        Text(
+          "Change Password",
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+        ),
         const SizedBox(height: 6),
         Container(
           decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: .9),
-              borderRadius: BorderRadius.circular(8)),
+            border: Border.all(color: Colors.black, width: .9),
+            borderRadius: BorderRadius.circular(8),
+          ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: TextField(
@@ -149,7 +149,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 border: InputBorder.none,
                 suffixIcon: IconButton(
                   icon: Icon(
-                      showPassword ? Icons.visibility_off : Icons.visibility),
+                    showPassword ? Icons.visibility_off : Icons.visibility,
+                  ),
                   onPressed: () {
                     setState(() {
                       showPassword = !showPassword;

@@ -22,16 +22,13 @@ class _ProfilePageState extends State<ProfilePicturePage> {
 
     return Scaffold(
       backgroundColor: background,
-  appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: background,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: textColor),
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => const RegistrationPage()),
-            );
+            Navigator.pop(context);
           },
         ),
       ),
@@ -49,12 +46,12 @@ class _ProfilePageState extends State<ProfilePicturePage> {
                     context,
                     PageRouteBuilder(
                       opaque: false,
-                      pageBuilder: (_, __, ___) => FullscreenImage(isDark: isDarkMode),
+                      pageBuilder: (_, __, ___) =>
+                          FullscreenImage(isDark: isDarkMode),
                     ),
                   );
                 },
               ),
-
 
               const SizedBox(height: 40),
 

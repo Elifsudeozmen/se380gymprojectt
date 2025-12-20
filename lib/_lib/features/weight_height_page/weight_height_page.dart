@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gymproject/_lib/features/bmi_result_page/presentation/bmi_result_page.dart';
 import 'package:gymproject/_lib/features/weight_height_page/data/services/bmi_service.dart';
 import 'package:gymproject/_lib/features/weight_height_page/widgets/bmi_label.dart';
 import 'package:gymproject/_lib/features/weight_height_page/widgets/bmi_input_field.dart';
 import 'package:gymproject/_lib/features/weight_height_page/widgets/bmi_calculate_button.dart';
 import 'package:gymproject/_lib/features/dark_light_theme/theme_toggle.dart';
+import 'package:gymproject/_lib/features/weight_track_page/weight_track_page.dart';
 
 class WeightHeightPage extends StatefulWidget {
   const WeightHeightPage({super.key});
@@ -74,7 +76,6 @@ class _WeightHeightPageState extends State<WeightHeightPage> {
               onTap: () async {
                 final height = double.tryParse(heightController.text);
                 final weight = double.tryParse(weightController.text);
-                print("🔥 CALCULATE BUTTON CLICKED");
 
                 if (height == null ||
                     weight == null ||
@@ -95,6 +96,13 @@ class _WeightHeightPageState extends State<WeightHeightPage> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('✅ BMI calculated and saved')),
                   );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          BMIResultPage(height: height, weight: weight),
+                    ),
+                  );
                 } catch (e) {
                   ScaffoldMessenger.of(
                     context,
@@ -104,15 +112,6 @@ class _WeightHeightPageState extends State<WeightHeightPage> {
             ),
 
             const SizedBox(height: 40),
-
-            // THEME TOGGLE
-            ThemeToggle(
-              isDarkMode: isDarkMode,
-              textColor: textColor,
-              onChanged: (value) {
-                setState(() => isDarkMode = value);
-              },
-            ),
           ],
         ),
       ),

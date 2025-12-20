@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:gymproject/_lib/features/home_page/presentation/home_page.dart';
 import 'package:gymproject/_lib/features/profile_page/presentation/services/auth_service.dart';
@@ -10,7 +9,7 @@ import 'package:gymproject/_lib/features/profile_page/presentation/widgets/profi
 import 'package:gymproject/_lib/features/profile_page/presentation/widgets/signup_button.dart';
 import 'package:gymproject/_lib/features/profile_page/presentation/widgets/username_field.dart';
 import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
-
+import 'package:gymproject/_lib/features/update_profile_page/presentation/update_button.dart';
 
 class UpdateProfilePage extends StatefulWidget {
   const UpdateProfilePage({super.key});
@@ -65,12 +64,7 @@ class UpdateProfilePageState extends State<UpdateProfilePage> {
                   alignment: Alignment.centerLeft,
                   child: IconButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomePage(),
-                        ),
-                      );
+                      Navigator.pop(context);
                     },
                     icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
                   ),
@@ -87,54 +81,49 @@ class UpdateProfilePageState extends State<UpdateProfilePage> {
                 ProfileDateField(label: "Birth Date", controller: birthCtrl),
                 const SizedBox(height: 20),
                 DropdownButtonFormField<String>(
-  decoration: InputDecoration(
-    labelText: "Gender",
-    labelStyle: const TextStyle(color: Colors.black87),
-    filled: true,
-    fillColor: Colors.white,
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(20),
-      borderSide: const BorderSide(
-        color: Colors.black26,
-      ),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(20),
-      borderSide: const BorderSide(
-        color: Colors.black26,
-      ),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(20),
-      borderSide: const BorderSide(
-        color: Colors.black,
-        width: 1.3,
-      ),
-    ),
-    contentPadding: const EdgeInsets.symmetric(
-      horizontal: 20,
-      vertical: 15,
-    ),
-  ),
-  icon: const Icon(
-    Icons.arrow_drop_down,
-    color: Colors.black87,
-  ),
-  dropdownColor: Colors.white,
-  style: const TextStyle(
-    color: Colors.black,
-    fontSize: 16,
-    fontWeight: FontWeight.w500,
-  ),
-  value: selectedGender,
-  items: const [
-    DropdownMenuItem(value: "Male", child: Text("Male")),
-    DropdownMenuItem(value: "Female", child: Text("Female")),
-    DropdownMenuItem(value: "Other", child: Text("Other")),
-  ],
-  onChanged: (value) => setState(() => selectedGender = value),
-),
-
+                  decoration: InputDecoration(
+                    labelText: "Gender",
+                    labelStyle: const TextStyle(color: Colors.black87),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: const BorderSide(color: Colors.black26),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: const BorderSide(color: Colors.black26),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: const BorderSide(
+                        color: Colors.black,
+                        width: 1.3,
+                      ),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 15,
+                    ),
+                  ),
+                  icon: const Icon(
+                    Icons.arrow_drop_down,
+                    color: Colors.black87,
+                  ),
+                  dropdownColor: Colors.white,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  value: selectedGender,
+                  items: const [
+                    DropdownMenuItem(value: "Male", child: Text("Male")),
+                    DropdownMenuItem(value: "Female", child: Text("Female")),
+                    DropdownMenuItem(value: "Other", child: Text("Other")),
+                  ],
+                  onChanged: (value) => setState(() => selectedGender = value),
+                ),
 
                 const SizedBox(height: 10),
                 ProfileTextField(
@@ -152,7 +141,7 @@ class UpdateProfilePageState extends State<UpdateProfilePage> {
                 ),
 
                 const SizedBox(height: 20),
-                SignUpButton(onPressed: validateAndSubmit),
+                UpdateButton(onPressed: () {}),
               ],
             ),
           ),
