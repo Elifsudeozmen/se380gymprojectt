@@ -22,9 +22,21 @@ class WeekView extends StatelessWidget {
           // 🔥 WEEK HEADER
           Padding(
             padding: const EdgeInsets.all(16),
-            child: Text(
-              DateUtilsHelper.weekTitle(weekStart),
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF5F5DC), // 🎨 BEJ
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                DateUtilsHelper.weekTitle(weekStart),
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
 
