@@ -42,20 +42,17 @@ class BMIResultPage extends StatelessWidget {
             children: [
               // IMAGE PLACEHOLDER
               Container(
-                height: 200,
+                height: 400,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: theme.colorScheme.surfaceVariant,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 alignment: Alignment.center,
-                child: Text(
-                  "assets/images/bmi_result.jpg",
-                  style: TextStyle(color: onBg.withOpacity(0.6)),
-                ),
+                child: Image.asset("assets/images/bodymassindex.jpg"),
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 100),
 
               // BMI RESULT CARD
               Container(
@@ -79,7 +76,7 @@ class BMIResultPage extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
                     Text(
                       message,
                       textAlign: TextAlign.center,
@@ -94,7 +91,7 @@ class BMIResultPage extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 60),
 
               // TRACK BUTTON
               SizedBox(

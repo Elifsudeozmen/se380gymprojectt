@@ -26,7 +26,7 @@ class WeekView extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               decoration: BoxDecoration(
-                color: const Color(0xFFF5F5DC), // 🎨 BEJ
+                color: const Color(0x00f6f2ec), // 🎨 BEJ
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(

@@ -60,7 +60,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
               ),
               child: const Text(
                 'Calculate Your Body Mass Index',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
