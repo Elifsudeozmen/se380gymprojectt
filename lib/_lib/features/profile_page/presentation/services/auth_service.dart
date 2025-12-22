@@ -31,7 +31,7 @@ class AuthService {
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      // Firestore’a profil bilgilerini kaydet
+      // Firestore’a profil bilgilerini kaydet daha sonra image eklencek
       await _db.collection('users').doc(userCredential.user!.uid).set({
         'username': username,
         'name': name,
