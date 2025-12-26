@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../dto/appointment_dto.dart';
 
 class AppointmentService {
@@ -27,13 +28,19 @@ class AppointmentService {
   }
 
   Future<void> createAppointment(AppointmentDto dto) async {
-    final appointmentsRef = _firestore.collection('appointments');
+    final user = FirebaseAuth.instance.currentUser;
 
+    if (user == null) {
+      throw Exception("User not logged in");
+    }
+
+    final userId = user.uid;
+    final appointmentsRef = _firestore.collection('appointments');
     final normalizedDate = _normalizeDate(dto.date);
 
     // 1️⃣ Aynı user aynı slotu almasın
     final userCheck = await appointmentsRef
-        .where('userId', isEqualTo: dto.userId)
+        .where('userId', isEqualTo: userId)
         .where('date', isEqualTo: Timestamp.fromDate(normalizedDate))
         .where('timeSlot', isEqualTo: dto.timeSlot)
         .limit(1)
@@ -53,8 +60,8 @@ class AppointmentService {
       throw Exception('Capacity full');
     }
 
-    // 3️⃣ Normalize edilmiş tarih ile kayıt
-    final normalizedDto = dto.copyWith(date: normalizedDate);
+    // 3️⃣ Normalize edilmiş ve GÜNCEL userId ile kayıt
+    final normalizedDto = dto.copyWith(userId: userId, date: normalizedDate);
 
     await appointmentsRef.add(normalizedDto.toMap());
   }
