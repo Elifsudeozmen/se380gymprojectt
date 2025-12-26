@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gymproject/_lib/features/profile_picture_page/profile_picture_page.dart';
 import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
+import 'package:gymproject/_lib/features/weight_height_page/data/services/bmi_service.dart';
 import 'package:gymproject/_lib/features/weight_track_page/business/weight_model.dart';
-import 'package:gymproject/_lib/features/weight_track_page/data/weight_service.dart';
 import 'package:gymproject/_lib/features/weight_track_page/presentation/widgets/track_panel.dart';
 import 'package:gymproject/_lib/features/weight_track_page/presentation/widgets/weight_control.dart';
+import 'package:gymproject/_lib/features/weight_height_page/data/bmi_record_dto.dart';
 import 'package:lottie/lottie.dart';
-
-
 
 class WeightTrackPage extends StatefulWidget {
   const WeightTrackPage({Key? key}) : super(key: key);
@@ -17,70 +16,88 @@ class WeightTrackPage extends StatefulWidget {
 }
 
 class _WeightPageState extends State<WeightTrackPage> {
-  final WeightService _service = WeightService();
-  WeightModel? _weightData;
+  final BmiService _bmiService = BmiService();
+
+  WeightModel _weightData = WeightModel(weight: 70);
+  List<BmiRecordDto> _records = [];
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    loadWeight();
+    loadBmiRecords();
   }
 
-  Future<void> loadWeight() async {
-    final data = await _service.loadUserWeight();
+  Future<void> loadBmiRecords() async {
+    final list = await _bmiService.getAllBmiRecords();
+
     setState(() {
-      _weightData = data;
+      _records = list;
+      if (_records.isNotEmpty) {
+        _weightData = WeightModel(weight: _records.first.weight);
+      }
       _isLoading = false;
     });
   }
 
   void changeWeight(bool increase) {
     setState(() {
-      double w = _weightData!.weight;
+      final w = _weightData.weight;
       _weightData = WeightModel(weight: increase ? w + 1 : w - 1);
     });
   }
 
   Future<void> updateBackend() async {
-    await _service.updateWeight(_weightData!.weight);
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text("Updated.")));
+    final height = _records.isNotEmpty ? _records.first.height : 170.0;
+
+    await _bmiService.calculateAndSaveBmi(
+      height: height,
+      weight: _weightData.weight,
+    );
+
+    await loadBmiRecords();
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text("BMI measured again")));
+  }
+
+  String daysAgo(DateTime date) {
+    final diff = DateTime.now().difference(date).inDays;
+    if (diff == 0) return "Today";
+    if (diff == 1) return "1 day ago";
+    return "$diff days ago";
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffF6F2EC),
-            appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: const Color(0xffF6F2EC),
         elevation: 0,
         iconTheme: const IconThemeData(color: Color(0xff1C1C1C)),
         actions: [
           IconButton(
-            icon: const Icon(Icons.home, color: Color(0xff1C1C1C)),
+            icon: const Icon(Icons.home),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const RegistrationPage(),
-                ),
+                MaterialPageRoute(builder: (_) => const RegistrationPage()),
               );
             },
           ),
           IconButton(
-            icon: const Icon(Icons.person, color: Color(0xff1C1C1C)),
+            icon: const Icon(Icons.person),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const ProfilePicturePage(),
-                ),
+                MaterialPageRoute(builder: (_) => const ProfilePicturePage()),
               );
             },
           ),
         ],
-      ), // beige
+      ),
       body: SafeArea(
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
@@ -91,7 +108,6 @@ class _WeightPageState extends State<WeightTrackPage> {
                   children: [
                     const SizedBox(height: 40),
 
-                    // Animation
                     Lottie.asset(
                       "assets/animations/Weight scale.json",
                       height: 160,
@@ -99,10 +115,10 @@ class _WeightPageState extends State<WeightTrackPage> {
 
                     const SizedBox(height: 32),
 
-                    Text(
+                    const Text(
                       "How much weight the user should lose to have a healthy BMI",
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: Color(0xff1C1C1C),
@@ -112,14 +128,12 @@ class _WeightPageState extends State<WeightTrackPage> {
                     const SizedBox(height: 36),
 
                     WeightControl(
-                      weight: _weightData!.weight,
+                      weight: _weightData.weight,
                       onIncrease: () => changeWeight(true),
                       onDecrease: () => changeWeight(false),
                     ),
 
                     const SizedBox(height: 36),
-
-                    const TrackPanel(),
 
                     const SizedBox(height: 36),
 
@@ -128,12 +142,12 @@ class _WeightPageState extends State<WeightTrackPage> {
                       height: 52,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xff1C1C1C), // black
-                          foregroundColor: Colors.white, // text color
+                          backgroundColor: const Color(0xff1C1C1C),
+                          foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(6),
                           ),
-                          elevation: 0, // flat design
+                          elevation: 0,
                         ),
                         onPressed: updateBackend,
                         child: const Text(
@@ -146,6 +160,55 @@ class _WeightPageState extends State<WeightTrackPage> {
                       ),
                     ),
 
+                    const SizedBox(height: 40),
+
+                    // 🔽 BMI RECORD LIST
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: _records.length,
+                      itemBuilder: (context, index) {
+                        final r = _records[index];
+
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 10,
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "BMI ${r.bmi.toStringAsFixed(1)}",
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text("Height: ${r.height} cm"),
+                              Text("Weight: ${r.weight} kg"),
+                              const SizedBox(height: 6),
+                              Text(
+                                daysAgo(r.createdAt),
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
 
                     const SizedBox(height: 40),
                   ],

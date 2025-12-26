@@ -13,6 +13,20 @@ class BmiService {
     return weightKg / (heightM * heightM);
   }
 
+  Future<List<BmiRecordDto>> getAllBmiRecords() async {
+    final user = _auth.currentUser;
+    if (user == null) return [];
+
+    final query = await _db
+        .collection('users')
+        .doc(user.uid)
+        .collection('bmi_records')
+        .orderBy('createdAt', descending: true)
+        .get();
+
+    return query.docs.map((doc) => BmiRecordDto.fromMap(doc.data())).toList();
+  }
+
   /// Hesapla + kaydet
   Future<void> calculateAndSaveBmi({
     required double height,
