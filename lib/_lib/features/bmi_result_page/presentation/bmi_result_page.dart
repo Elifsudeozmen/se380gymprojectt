@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gymproject/_lib/features/bmi_result_page/business/bmi_calculator.dart';
 import 'package:gymproject/_lib/features/bmi_result_page/data/bmi_repository.dart';
+import 'package:gymproject/_lib/features/profile_picture_page/profile_picture_page.dart';
+import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
 import 'package:gymproject/_lib/features/weight_height_page/weight_height_page.dart';
 import 'package:gymproject/_lib/features/weight_track_page/weight_track_page.dart';
 
@@ -34,6 +36,30 @@ class BMIResultPage extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.home, color: onBg),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RegistrationPage(),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.person, color: onBg),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfilePicturePage(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(

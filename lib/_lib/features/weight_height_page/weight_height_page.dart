@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymproject/_lib/features/bmi_result_page/presentation/bmi_result_page.dart';
+import 'package:gymproject/_lib/features/profile_picture_page/profile_picture_page.dart';
+import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
 import 'package:gymproject/_lib/features/weight_height_page/data/services/bmi_service.dart';
 import 'package:gymproject/_lib/features/weight_height_page/widgets/bmi_label.dart';
 import 'package:gymproject/_lib/features/weight_height_page/widgets/bmi_input_field.dart';
@@ -48,6 +50,31 @@ class _WeightHeightPageState extends State<WeightHeightPage> {
           ),
         ),
         iconTheme: IconThemeData(color: textColor),
+                actions: [
+          IconButton(
+            icon: Icon(Icons.home, color: textColor),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RegistrationPage(),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.person, color: textColor),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfilePicturePage(),
+                ),
+              );
+            },
+          ),
+        ],
+        
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 26),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gymproject/_lib/features/profile_page/presentation/profile_page.dart';
 import 'package:gymproject/_lib/features/update_profile_page/presentation/update_profile_page.dart';
 import 'package:gymproject/_lib/features/home_page/services/auth_gate.dart';
+import 'package:gymproject/_lib/features/weight_track_page/weight_track_page.dart';
 
 class ProfileButtons extends StatelessWidget {
   final Color textColor;
@@ -14,6 +15,63 @@ class ProfileButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        // Appointments Button
+        SizedBox(
+          width: 250,
+          child: OutlinedButton(
+            onPressed: () {
+              // Şimdilik boş
+            },
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(color: textColor, width: 1.4),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6),
+              ),
+            ),
+            child: Text(
+              "Appointments",
+              style: TextStyle(
+                fontSize: 16,
+                letterSpacing: 0.5,
+                color: textColor,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        
+        // BMI Tracker Button
+        SizedBox(
+          width: 250,
+          child: OutlinedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const WeightTrackPage(),
+                ),
+              );
+            },
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(color: textColor, width: 1.4),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6),
+              ),
+            ),
+            child: Text(
+              "BMI Tracker",
+              style: TextStyle(
+                fontSize: 16,
+                letterSpacing: 0.5,
+                color: textColor,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+
         SizedBox(
           width: 250,
           child: OutlinedButton(

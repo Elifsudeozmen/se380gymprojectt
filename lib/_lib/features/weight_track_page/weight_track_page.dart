@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gymproject/_lib/features/profile_picture_page/profile_picture_page.dart';
+import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
 import 'package:gymproject/_lib/features/weight_track_page/business/weight_model.dart';
 import 'package:gymproject/_lib/features/weight_track_page/data/weight_service.dart';
 import 'package:gymproject/_lib/features/weight_track_page/presentation/widgets/track_panel.dart';
@@ -49,7 +51,36 @@ class _WeightPageState extends State<WeightTrackPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF6F2EC), // beige
+      backgroundColor: const Color(0xffF6F2EC),
+            appBar: AppBar(
+        backgroundColor: const Color(0xffF6F2EC),
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Color(0xff1C1C1C)),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home, color: Color(0xff1C1C1C)),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RegistrationPage(),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.person, color: Color(0xff1C1C1C)),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfilePicturePage(),
+                ),
+              );
+            },
+          ),
+        ],
+      ), // beige
       body: SafeArea(
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
