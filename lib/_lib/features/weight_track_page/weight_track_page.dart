@@ -72,11 +72,9 @@ class _WeightPageState extends State<WeightTrackPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF6F2EC),
       appBar: AppBar(
-        backgroundColor: const Color(0xffF6F2EC),
         elevation: 0,
-        iconTheme: const IconThemeData(color: Color(0xff1C1C1C)),
+        iconTheme: Theme.of(context).iconTheme,
         actions: [
           IconButton(
             icon: const Icon(Icons.home),
@@ -114,16 +112,6 @@ class _WeightPageState extends State<WeightTrackPage> {
                     ),
 
                     const SizedBox(height: 32),
-
-                    const Text(
-                      "How much weight the user should lose to have a healthy BMI",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xff1C1C1C),
-                      ),
-                    ),
 
                     const SizedBox(height: 36),
 
@@ -174,7 +162,7 @@ class _WeightPageState extends State<WeightTrackPage> {
                           margin: const EdgeInsets.only(bottom: 12),
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).cardColor,
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
