@@ -7,6 +7,9 @@ import 'package:gymproject/_lib/features/profile_picture_page/widgets/fullscreen
 import 'package:gymproject/_lib/theme_notifier.dart';
 import 'package:provider/provider.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ProfilePicturePage extends StatefulWidget {
   const ProfilePicturePage({super.key});
 
@@ -15,6 +18,30 @@ class ProfilePicturePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePicturePage> {
+  String? fullName;
+  bool loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    getUserName();
+  }
+
+  Future<void> getUserName() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+
+    setState(() {
+      fullName = "${doc['name']} ${doc['surname']}";
+      loading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeNotifier>();
@@ -35,7 +62,6 @@ class _ProfilePageState extends State<ProfilePicturePage> {
           },
         ),
       ),
-
       body: SafeArea(
         child: Center(
           child: Column(
@@ -55,6 +81,19 @@ class _ProfilePageState extends State<ProfilePicturePage> {
                   );
                 },
               ),
+
+              const SizedBox(height: 12),
+
+              loading
+                  ? const CircularProgressIndicator(strokeWidth: 2)
+                  : Text(
+                      fullName ?? "",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: textColor,
+                      ),
+                    ),
 
               const SizedBox(height: 40),
 
