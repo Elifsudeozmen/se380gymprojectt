@@ -33,7 +33,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       themeMode: theme.themeMode,
-      theme: ThemeData.light(),
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xffF6F2EC), // 🔥 TEK KAYNAK
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xffF6F2EC),
+          foregroundColor: Color(0xff1C1C1C),
+          elevation: 0,
+        ),
+      ),
       darkTheme: ThemeData.dark(),
       home: const AuthGate(),
     );
