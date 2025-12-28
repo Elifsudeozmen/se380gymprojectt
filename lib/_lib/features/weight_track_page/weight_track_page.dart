@@ -7,6 +7,8 @@ import 'package:gymproject/_lib/features/weight_track_page/presentation/widgets/
 import 'package:gymproject/_lib/features/weight_track_page/presentation/widgets/weight_control.dart';
 import 'package:gymproject/_lib/features/weight_height_page/data/bmi_record_dto.dart';
 import 'package:lottie/lottie.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class WeightTrackPage extends StatefulWidget {
   const WeightTrackPage({Key? key}) : super(key: key);
@@ -17,15 +19,57 @@ class WeightTrackPage extends StatefulWidget {
 
 class _WeightPageState extends State<WeightTrackPage> {
   final BmiService _bmiService = BmiService();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   WeightModel _weightData = WeightModel(weight: 70);
   List<BmiRecordDto> _records = [];
   bool _isLoading = true;
+  double _userHeight = 170.0; // Kullanıcının gerçek boyu
 
   @override
   void initState() {
     super.initState();
-    loadBmiRecords();
+    _initializeData();
+  }
+
+  /// Kullanıcı verilerini ve BMI kayıtlarını yükle
+  Future<void> _initializeData() async {
+    await _loadUserProfile();
+    await loadBmiRecords();
+  }
+
+  /// Firestore'dan kullanıcının boy ve kilo bilgilerini çek
+  Future<void> _loadUserProfile() async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) return;
+
+      final doc = await _db.collection('users').doc(user.uid).get();
+      if (doc.exists) {
+        final data = doc.data();
+        if (data != null) {
+          // Boy bilgisini al (String'den double'a çevir)
+          final heightStr = data['height'] as String?;
+          if (heightStr != null) {
+            _userHeight = double.tryParse(heightStr) ?? 170.0;
+          }
+
+          // Kilo bilgisini al (eğer BMI kaydı yoksa kullanılacak)
+          final weightStr = data['weight'] as String?;
+          if (weightStr != null) {
+            final userWeight = double.tryParse(weightStr) ?? 70.0;
+
+            // Eğer hiç BMI kaydı yoksa, kullanıcının kayıt sırasındaki kilosunu kullan
+            if (_records.isEmpty) {
+              _weightData = WeightModel(weight: userWeight);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint("Error loading user profile: $e");
+    }
   }
 
   Future<void> loadBmiRecords() async {
@@ -35,6 +79,8 @@ class _WeightPageState extends State<WeightTrackPage> {
       _records = list;
       if (_records.isNotEmpty) {
         _weightData = WeightModel(weight: _records.first.weight);
+        // İlk kayıttaki boy bilgisini de güncelle
+        _userHeight = _records.first.height;
       }
       _isLoading = false;
     });
@@ -48,18 +94,19 @@ class _WeightPageState extends State<WeightTrackPage> {
   }
 
   Future<void> updateBackend() async {
-    final height = _records.isNotEmpty ? _records.first.height : 170.0;
-
+    // Artık kullanıcının gerçek boyunu kullanıyoruz
     await _bmiService.calculateAndSaveBmi(
-      height: height,
+      height: _userHeight,
       weight: _weightData.weight,
     );
 
     await loadBmiRecords();
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text("BMI measured again")));
+    if (mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("BMI measured again")));
+    }
   }
 
   String daysAgo(DateTime date) {
@@ -150,7 +197,7 @@ class _WeightPageState extends State<WeightTrackPage> {
 
                     const SizedBox(height: 40),
 
-                    // 🔽 BMI RECORD LIST
+                    // BMI RECORD LIST
                     ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
