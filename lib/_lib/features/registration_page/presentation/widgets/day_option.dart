@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../data/services/appointment_service.dart';
 import '../../data/dto/appointment_dto.dart';
 
@@ -14,6 +16,7 @@ class DayOption extends StatefulWidget {
 
 class _DayOptionState extends State<DayOption> {
   final AppointmentService service = AppointmentService();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool _isSubmitting = false;
 
   final List<String> timeOptions = [
@@ -36,6 +39,28 @@ class _DayOptionState extends State<DayOption> {
     final slotDateTime = DateTime(date.year, date.month, date.day, startHour);
 
     return slotDateTime.isBefore(now);
+  }
+
+  Future<String> _getUserGender() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      throw Exception('User not logged in');
+    }
+
+    final userDoc = await _firestore.collection('users').doc(user.uid).get();
+
+    if (!userDoc.exists) {
+      throw Exception('User data not found');
+    }
+
+    final gender = userDoc.data()?['gender'];
+
+    if (gender == null || (gender != 'Male' && gender != 'Female')) {
+      throw Exception('Invalid gender data');
+    }
+
+    return gender as String;
   }
 
   @override
@@ -139,9 +164,13 @@ class _DayOptionState extends State<DayOption> {
     setState(() => _isSubmitting = true);
 
     try {
+      // 🔥 Gender'ı Firestore'dan çek
+      final gender = await _getUserGender();
+      final user = FirebaseAuth.instance.currentUser!;
+
       final appointment = AppointmentDto(
-        userId: 'CURRENT_USER_ID', // 🔜 FirebaseAuth
-        gender: 'Female', // 🔜 users collection
+        userId: user.uid,
+        gender: gender, // ✅ Artık gerçek gender
         date: widget.date,
         day: widget.day,
         timeSlot: time,
@@ -166,6 +195,12 @@ class _DayOptionState extends State<DayOption> {
         message = '❌ This time slot is full';
       } else if (e.toString().contains('Past appointment')) {
         message = '⏳ You cannot book past time slots';
+      } else if (e.toString().contains('User not logged in')) {
+        message = '🔒 Please log in first';
+      } else if (e.toString().contains('User data not found')) {
+        message = '⚠️ User profile not found';
+      } else if (e.toString().contains('Invalid gender data')) {
+        message = '⚠️ Please update your profile with gender information';
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
