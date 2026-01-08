@@ -9,6 +9,7 @@ import 'package:gymproject/_lib/features/profile_page/presentation/widgets/profi
 import 'package:gymproject/_lib/features/profile_page/presentation/widgets/signup_button.dart';
 import 'package:gymproject/_lib/features/profile_page/presentation/widgets/username_field.dart';
 import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
+import 'package:gymproject/_lib/features/update_profile_page/data/services/update_profile_service.dart';
 import 'package:gymproject/_lib/features/update_profile_page/presentation/update_button.dart';
 
 class UpdateProfilePage extends StatefulWidget {
@@ -28,8 +29,34 @@ class UpdateProfilePageState extends State<UpdateProfilePage> {
   final confirmCtrl = TextEditingController();
   final usernameCtrl = TextEditingController();
   final emailCtrl = TextEditingController();
+  late final ProfileService _profileService;
+  bool _isLoading = true;
 
   String? selectedGender; // dropdown için
+
+  @override
+  void initState() {
+    super.initState();
+    _profileService = ProfileService();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    final data = await _profileService.getUserProfile();
+    if (data == null) return;
+
+    setState(() {
+      emailCtrl.text = data['email'] ?? '';
+      usernameCtrl.text = data['username'] ?? '';
+      nameCtrl.text = data['name'] ?? '';
+      surnameCtrl.text = data['surname'] ?? '';
+      birthCtrl.text = data['birthDate'] ?? '';
+      heightCtrl.text = data['height'] ?? '';
+      weightCtrl.text = data['weight'] ?? '';
+      selectedGender = data['gender'];
+      _isLoading = false;
+    });
+  }
 
   @override
   void dispose() {
@@ -48,6 +75,9 @@ class UpdateProfilePageState extends State<UpdateProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -141,13 +171,37 @@ class UpdateProfilePageState extends State<UpdateProfilePage> {
                 ),
 
                 const SizedBox(height: 20),
-                UpdateButton(onPressed: () {}),
+                UpdateButton(onPressed: _updateProfile),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _updateProfile() async {
+    try {
+      await _profileService.updateUserProfile(
+        username: usernameCtrl.text.trim(),
+        name: nameCtrl.text.trim(),
+        surname: surnameCtrl.text.trim(),
+        birthDate: birthCtrl.text.trim(),
+        gender: selectedGender!,
+        height: heightCtrl.text.trim(),
+        weight: weightCtrl.text.trim(),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Profile updated successfully")),
+      );
+
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
   }
 
   void validateAndSubmit() async {
