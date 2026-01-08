@@ -29,40 +29,55 @@ class AppointmentService {
 
   Future<void> createAppointment(AppointmentDto dto) async {
     final user = FirebaseAuth.instance.currentUser;
-
-    if (user == null) {
-      throw Exception("User not logged in");
-    }
+    if (user == null) throw Exception("User not logged in");
 
     final userId = user.uid;
-    final appointmentsRef = _firestore.collection('appointments');
     final normalizedDate = _normalizeDate(dto.date);
 
-    // 1️⃣ Aynı user aynı slotu almasın
-    final userCheck = await appointmentsRef
-        .where('userId', isEqualTo: userId)
-        .where('date', isEqualTo: Timestamp.fromDate(normalizedDate))
-        .where('timeSlot', isEqualTo: dto.timeSlot)
-        .limit(1)
-        .get();
+    final slotId = '${normalizedDate.toIso8601String()}_${dto.timeSlot}';
 
-    if (userCheck.docs.isNotEmpty) {
-      throw Exception('User already has an appointment');
-    }
+    final slotRef = _firestore.collection('timeSlots').doc(slotId);
+    final appointmentRef = _firestore.collection('appointments').doc();
 
-    // 2️⃣ Kapasite kontrolü
-    final capacityCheck = await appointmentsRef
-        .where('date', isEqualTo: Timestamp.fromDate(normalizedDate))
-        .where('timeSlot', isEqualTo: dto.timeSlot)
-        .get();
+    await _firestore.runTransaction((transaction) async {
+      // 1️⃣ Slot dokümanını oku
+      final slotSnapshot = await transaction.get(slotRef);
 
-    if (capacityCheck.size >= maxCapacity) {
-      throw Exception('Capacity full');
-    }
+      int currentCount = 0;
 
-    // 3️⃣ Normalize edilmiş ve GÜNCEL userId ile kayıt
-    final normalizedDto = dto.copyWith(userId: userId, date: normalizedDate);
+      if (slotSnapshot.exists) {
+        currentCount = slotSnapshot.get('currentCount');
+      }
 
-    await appointmentsRef.add(normalizedDto.toMap());
+      // 2️⃣ Kapasite kontrolü (ATOMIC)
+      if (currentCount >= maxCapacity) {
+        throw Exception('Capacity full');
+      }
+
+      // 3️⃣ Aynı user aynı slotu almış mı?
+      final userQuery = await _firestore
+          .collection('appointments')
+          .where('userId', isEqualTo: userId)
+          .where('date', isEqualTo: Timestamp.fromDate(normalizedDate))
+          .where('timeSlot', isEqualTo: dto.timeSlot)
+          .limit(1)
+          .get();
+
+      if (userQuery.docs.isNotEmpty) {
+        throw Exception('User already has an appointment');
+      }
+
+      // 4️⃣ Slot counter artır
+      transaction.set(slotRef, {
+        'date': Timestamp.fromDate(normalizedDate),
+        'timeSlot': dto.timeSlot,
+        'currentCount': currentCount + 1,
+      }, SetOptions(merge: true));
+
+      // 5️⃣ Appointment ekle
+      final normalizedDto = dto.copyWith(userId: userId, date: normalizedDate);
+
+      transaction.set(appointmentRef, normalizedDto.toMap());
+    });
   }
 }

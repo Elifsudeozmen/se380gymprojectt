@@ -7,7 +7,7 @@ class BmiLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textColor = Theme.of(context).colorScheme.onBackground;
+    final textColor = Theme.of(context).colorScheme.onSurface;
 
     return Align(
       alignment: Alignment.centerLeft,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TrackPanel extends StatelessWidget {
-  const TrackPanel({Key? key}) : super(key: key);
+  const TrackPanel({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,10 +11,7 @@ class TrackPanel extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color.fromARGB(255, 241, 241, 241),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(
-          color: const Color(0xff1C1C1C),
-          width: 1.2,
-        ),
+        border: Border.all(color: const Color(0xff1C1C1C), width: 1.2),
       ),
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

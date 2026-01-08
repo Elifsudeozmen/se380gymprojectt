@@ -16,7 +16,7 @@ class BMIResultPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final background = theme.scaffoldBackgroundColor;
-    final onBg = theme.colorScheme.onBackground;
+    final onBg = theme.colorScheme.onSurface;
     final isDark = theme.brightness == Brightness.dark;
 
     final bmiRepo = BMIRepository();
@@ -71,7 +71,7 @@ class BMIResultPage extends StatelessWidget {
                 height: 400,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceVariant,
+                  color: theme.colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 alignment: Alignment.center,

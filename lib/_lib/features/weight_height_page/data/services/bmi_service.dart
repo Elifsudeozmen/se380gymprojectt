@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gymproject/_lib/features/weight_height_page/data/bmi_record_dto.dart';
-import '';
 
 class BmiService {
   final FirebaseAuth _auth = FirebaseAuth.instance;

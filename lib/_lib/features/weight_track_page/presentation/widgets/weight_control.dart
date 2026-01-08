@@ -6,11 +6,11 @@ class WeightControl extends StatelessWidget {
   final VoidCallback onDecrease;
 
   const WeightControl({
-    Key? key,
+    super.key,
     required this.weight,
     required this.onIncrease,
     required this.onDecrease,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +38,10 @@ class WeightControl extends StatelessWidget {
               child: Text(
                 "${weight.toInt()}",
                 style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xff1C1C1C)),
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xff1C1C1C),
+                ),
               ),
             ),
           ),

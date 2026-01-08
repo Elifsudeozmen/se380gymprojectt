@@ -33,7 +33,7 @@ class _WeightHeightPageState extends State<WeightHeightPage> {
   @override
   Widget build(BuildContext context) {
     final background = Theme.of(context).scaffoldBackgroundColor;
-    final textColor = Theme.of(context).colorScheme.onBackground;
+    final textColor = Theme.of(context).colorScheme.onSurface;
 
     return Scaffold(
       backgroundColor: background,
@@ -50,7 +50,7 @@ class _WeightHeightPageState extends State<WeightHeightPage> {
           ),
         ),
         iconTheme: IconThemeData(color: textColor),
-                actions: [
+        actions: [
           IconButton(
             icon: Icon(Icons.home, color: textColor),
             onPressed: () {
@@ -74,7 +74,6 @@ class _WeightHeightPageState extends State<WeightHeightPage> {
             },
           ),
         ],
-        
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 26),

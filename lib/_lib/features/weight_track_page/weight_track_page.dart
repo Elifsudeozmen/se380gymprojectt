@@ -11,7 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class WeightTrackPage extends StatefulWidget {
-  const WeightTrackPage({Key? key}) : super(key: key);
+  const WeightTrackPage({super.key});
 
   @override
   State<WeightTrackPage> createState() => _WeightPageState();
@@ -94,7 +94,6 @@ class _WeightPageState extends State<WeightTrackPage> {
   }
 
   Future<void> updateBackend() async {
-    // Artık kullanıcının gerçek boyunu kullanıyoruz
     await _bmiService.calculateAndSaveBmi(
       height: _userHeight,
       weight: _weightData.weight,

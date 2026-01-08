@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymproject/_lib/features/home_page/presentation/widgets/auth_button.dart';
 import 'package:gymproject/_lib/features/home_page/services/auth_service.dart';
-import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
 import '../presentation/widgets/profile_avatar.dart';
 import '../presentation/widgets/username_field.dart';
 import '../presentation/widgets/password_field.dart';

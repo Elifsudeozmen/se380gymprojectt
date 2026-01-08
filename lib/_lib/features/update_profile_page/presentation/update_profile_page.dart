@@ -116,7 +116,7 @@ class UpdateProfilePageState extends State<UpdateProfilePage> {
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
-                  value: selectedGender,
+                  initialValue: selectedGender,
                   items: const [
                     DropdownMenuItem(value: "Male", child: Text("Male")),
                     DropdownMenuItem(value: "Female", child: Text("Female")),

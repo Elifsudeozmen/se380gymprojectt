@@ -4,7 +4,7 @@ import 'package:gymproject/_lib/features/edit_profile_page/data/user_repository.
 import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({Key? key}) : super(key: key);
+  const EditProfilePage({super.key});
 
   @override
   State<EditProfilePage> createState() => _EditProfilePageState();

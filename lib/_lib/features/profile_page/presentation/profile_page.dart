@@ -120,7 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
-                  value: selectedGender,
+                  initialValue: selectedGender,
                   items: const [
                     DropdownMenuItem(value: "Male", child: Text("Male")),
                     DropdownMenuItem(value: "Female", child: Text("Female")),
@@ -129,14 +129,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
 
                 const SizedBox(height: 10),
-                ProfileTextField(
-                  label: "Height (opt.)",
-                  controller: heightCtrl,
-                ),
-                ProfileTextField(
-                  label: "Weight (opt.)",
-                  controller: weightCtrl,
-                ),
+                ProfileTextField(label: "Height ", controller: heightCtrl),
+                ProfileTextField(label: "Weight ", controller: weightCtrl),
                 PasswordField(label: "Password", controller: passCtrl),
                 PasswordField(
                   label: "Confirm Password",
