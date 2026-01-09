@@ -3,7 +3,7 @@ import 'package:gymproject/_lib/features/registration_page/data/date_utils.dart'
 import 'day_option.dart';
 
 class WeekView extends StatelessWidget {
-  final DateTime weekStart; // pazartesi
+  final DateTime weekStart; // Pazartesi
 
   const WeekView({super.key, required this.weekStart});
 
@@ -19,14 +19,13 @@ class WeekView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 🔥 WEEK HEADER
           Padding(
             padding: const EdgeInsets.all(16),
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               decoration: BoxDecoration(
-                color: const Color(0x00f6f2ec), // 🎨 BEJ
+                color: const Color(0xFFF6F2EC),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -47,6 +46,8 @@ class WeekView extends StatelessWidget {
           DayOption(day: 'Friday', date: _dateOfWeek(5)),
           DayOption(day: 'Saturday', date: _dateOfWeek(6)),
           DayOption(day: 'Sunday', date: _dateOfWeek(7)),
+
+          const SizedBox(height: 20),
         ],
       ),
     );

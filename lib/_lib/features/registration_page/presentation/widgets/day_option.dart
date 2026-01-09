@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:gymproject/_lib/features/registration_page/presentation/widgets/slot_commentui.dart';
+
 import '../../data/services/appointment_service.dart';
 import '../../data/dto/appointment_dto.dart';
 
@@ -30,37 +32,22 @@ class _DayOptionState extends State<DayOption> {
     '22:00 - 00:00',
   ];
 
-  /// 🔒 Slot geçmiş mi?
+  // 🔒 Slot geçmiş mi?
   bool _isPastSlot(DateTime date, String timeSlot) {
     final now = DateTime.now();
-
     final startHour = int.parse(timeSlot.split(':')[0]);
-
     final slotDateTime = DateTime(date.year, date.month, date.day, startHour);
-
     return slotDateTime.isBefore(now);
   }
 
+  String _slotId(DateTime date, String timeSlot) {
+    return '${date.toIso8601String()}_$timeSlot';
+  }
+
   Future<String> _getUserGender() async {
-    final user = FirebaseAuth.instance.currentUser;
-
-    if (user == null) {
-      throw Exception('User not logged in');
-    }
-
-    final userDoc = await _firestore.collection('users').doc(user.uid).get();
-
-    if (!userDoc.exists) {
-      throw Exception('User data not found');
-    }
-
-    final gender = userDoc.data()?['gender'];
-
-    if (gender == null || (gender != 'Male' && gender != 'Female')) {
-      throw Exception('Invalid gender data');
-    }
-
-    return gender as String;
+    final user = FirebaseAuth.instance.currentUser!;
+    final doc = await _firestore.collection('users').doc(user.uid).get();
+    return doc['gender'];
   }
 
   @override
@@ -71,6 +58,8 @@ class _DayOptionState extends State<DayOption> {
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       children: timeOptions.map((time) {
+        final slotId = _slotId(widget.date, time);
+
         return StreamBuilder<List<AppointmentDto>>(
           stream: service.getAppointments(widget.date, time),
           builder: (context, snapshot) {
@@ -84,46 +73,90 @@ class _DayOptionState extends State<DayOption> {
             final isPast = _isPastSlot(widget.date, time);
             final isFull = total >= AppointmentService.maxCapacity;
 
-            return ListTile(
-              title: Text(time),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('👩 Female: $female   👨 Male: $male'),
-                  const SizedBox(height: 4),
-                  LinearProgressIndicator(value: percent),
-                  const SizedBox(height: 4),
-                  Text(
-                    '$total / ${AppointmentService.maxCapacity} '
-                    '(%${(percent * 100).toStringAsFixed(0)})',
-                  ),
-                  if (isPast)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 4),
-                      child: Text(
-                        '⏳ This time slot has passed',
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
+            return GestureDetector(
+              onTap: () {
+                // 💬 Slot'a tıklayınca yorum paneli açılır (her zaman)
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (_) =>
+                      SlotCommentsPanel(date: widget.date, timeRange: time),
+                );
+              },
+              child: StreamBuilder(
+                stream: _firestore
+                    .collection('timeSlots')
+                    .doc(slotId)
+                    .collection('comments')
+                    .limit(1)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  final hasComments = snapshot.data?.docs.isNotEmpty ?? false;
+
+                  return Stack(
+                    children: [
+                      ListTile(
+                        title: Text(time),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('👩 Female: $female   👨 Male: $male'),
+                            const SizedBox(height: 4),
+                            LinearProgressIndicator(value: percent),
+                            const SizedBox(height: 4),
+                            Text(
+                              '$total / ${AppointmentService.maxCapacity} '
+                              '(%${(percent * 100).toStringAsFixed(0)})',
+                            ),
+                            if (isPast)
+                              const Padding(
+                                padding: EdgeInsets.only(top: 4),
+                                child: Text(
+                                  '⏳ This time slot has passed',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                        trailing: _isSubmitting
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : IconButton(
+                                icon: Icon(
+                                  isPast || isFull
+                                      ? Icons.lock_outline
+                                      : Icons.add_circle_outline,
+                                  color: isPast || isFull ? Colors.grey : null,
+                                ),
+                                onPressed: (isPast || isFull || _isSubmitting)
+                                    ? null
+                                    : () => _showConfirmDialog(time),
+                              ),
                       ),
-                    ),
-                ],
+
+                      // 💬 Yorum balonu
+                      if (hasComments)
+                        const Positioned(
+                          top: 8,
+                          right: 48,
+                          child: Icon(
+                            Icons.chat_bubble,
+                            size: 18,
+                            color: Colors.orange,
+                          ),
+                        ),
+                    ],
+                  );
+                },
               ),
-              trailing: _isSubmitting
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : IconButton(
-                      icon: Icon(
-                        isPast || isFull
-                            ? Icons.lock_outline
-                            : Icons.add_circle_outline,
-                        color: isPast || isFull ? Colors.grey : null,
-                      ),
-                      onPressed: (isPast || isFull || _isSubmitting)
-                          ? null
-                          : () => _showConfirmDialog(time),
-                    ),
             );
           },
         );
@@ -131,15 +164,15 @@ class _DayOptionState extends State<DayOption> {
     );
   }
 
-  // 🔹 ONAY DIALOG
+  // ======================
+  // 🔹 CONFIRM
+  // ======================
   void _showConfirmDialog(String time) {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Confirm Appointment'),
-        content: Text(
-          '${widget.day} • $time\n\nAre you sure you want to book this appointment?',
-        ),
+        content: Text('${widget.day} • $time'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
@@ -157,20 +190,21 @@ class _DayOptionState extends State<DayOption> {
     );
   }
 
-  // 🔹 GERÇEK KAYIT
+  // ======================
+  // 🔹 CREATE
+  // ======================
   Future<void> _createAppointment(String time) async {
     if (_isSubmitting) return;
 
     setState(() => _isSubmitting = true);
 
     try {
-      // 🔥 Gender'ı Firestore'dan çek
       final gender = await _getUserGender();
       final user = FirebaseAuth.instance.currentUser!;
 
       final appointment = AppointmentDto(
         userId: user.uid,
-        gender: gender, // ✅ Artık gerçek gender
+        gender: gender,
         date: widget.date,
         day: widget.day,
         timeSlot: time,
@@ -184,32 +218,8 @@ class _DayOptionState extends State<DayOption> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('✅ Appointment created')));
-    } catch (e) {
-      if (!mounted) return;
-
-      String message = 'Something went wrong';
-
-      if (e.toString().contains('User already has an appointment')) {
-        message = '⚠️ You already have an appointment for this time slot';
-      } else if (e.toString().contains('Capacity full')) {
-        message = '❌ This time slot is full';
-      } else if (e.toString().contains('Past appointment')) {
-        message = '⏳ You cannot book past time slots';
-      } else if (e.toString().contains('User not logged in')) {
-        message = '🔒 Please log in first';
-      } else if (e.toString().contains('User data not found')) {
-        message = '⚠️ User profile not found';
-      } else if (e.toString().contains('Invalid gender data')) {
-        message = '⚠️ Please update your profile with gender information';
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message), backgroundColor: Colors.red),
-      );
     } finally {
-      if (mounted) {
-        setState(() => _isSubmitting = false);
-      }
+      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 }

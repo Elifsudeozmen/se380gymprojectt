@@ -44,4 +44,15 @@ class DateUtilsHelper {
 
     return '${formatDayMonth(monday)} - ${formatDayMonth(sunday)} Schedule';
   }
+
+  static String buildSlotId(DateTime date, String timeRange) {
+    final day = date.toIso8601String().split('T')[0]; // 2026-01-12
+
+    final safeTime = timeRange
+        .replaceAll(':', '') // 8:00 → 800
+        .replaceAll(' ', '') // boşluk sil
+        .replaceAll('-', '_'); // 800-1000 → 800_1000
+
+    return "${day}_$safeTime";
+  }
 }
