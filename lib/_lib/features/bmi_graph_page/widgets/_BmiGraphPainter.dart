@@ -4,8 +4,9 @@ class BmiGraphPainter extends CustomPainter {
   final List<double> bmi;
   final List<DateTime> dates;
   final bool isDark;
+  final double spacing;
 
-  BmiGraphPainter(this.bmi, this.dates, this.isDark);
+  BmiGraphPainter(this.bmi, this.dates, this.isDark, this.spacing);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -26,7 +27,6 @@ class BmiGraphPainter extends CustomPainter {
       ..color = isDark ? Colors.white70 : Colors.black54
       ..strokeWidth = 1;
 
-    // Axes
     canvas.drawLine(
       Offset(leftPad, topPad),
       Offset(leftPad, size.height - bottomPad),
@@ -47,7 +47,6 @@ class BmiGraphPainter extends CustomPainter {
       fontSize: 12,
     );
 
-    // ---- Y Axis labels (BMI) ----
     for (int i = 0; i <= 5; i++) {
       final value = min + range * i / 5;
       final y = topPad + height * (1 - i / 5);
@@ -70,7 +69,7 @@ class BmiGraphPainter extends CustomPainter {
     final path = Path();
 
     for (int i = 0; i < bmi.length; i++) {
-      final x = leftPad + (i / (bmi.length - 1)) * width;
+      final x = leftPad + i * spacing;
       final y = topPad + (1 - (bmi[i] - min) / range) * height;
 
       if (i == 0) {
@@ -87,20 +86,17 @@ class BmiGraphPainter extends CustomPainter {
 
     canvas.drawPath(path, linePaint);
 
-    // ---- Points ----
     final dotPaint = Paint()..color = Colors.red;
     for (int i = 0; i < bmi.length; i++) {
-      final x = leftPad + (i / (bmi.length - 1)) * width;
+      final x = leftPad + i * spacing;
       final y = topPad + (1 - (bmi[i] - min) / range) * height;
       canvas.drawCircle(Offset(x, y), 4, dotPaint);
     }
 
-    // ---- X Axis (Dates, no overlap) ----
-   // ---- X Axis labels (inside canvas, no clipping) ----
   final maxLabels = 6;
   final step = (bmi.length / maxLabels).ceil();
-  for (int i = 0; i < bmi.length; i += step) {
-    final x = leftPad + (i / (bmi.length - 1)) * width;
+  for (int i = 0; i < bmi.length; i++) {
+    final x = leftPad + i * spacing;
     final d = dates[i];
     final label = "${d.day}/${d.month}";
 
@@ -112,7 +108,7 @@ class BmiGraphPainter extends CustomPainter {
 
   tp.paint(
     canvas,
-    Offset(x - tp.width / 2, topPad + height + 8), // INSIDE canvas
+    Offset(x - tp.width / 2, topPad + height + 8), 
   );
 }
 

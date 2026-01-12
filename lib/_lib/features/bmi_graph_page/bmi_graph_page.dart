@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'widgets/bmi_graph_header.dart';
-import 'widgets/BmiGraphCanvas.dart';
+import 'widgets/_BmiGraphCanvas.dart';
 
 class BmiGraphPage extends StatelessWidget {
   final List<double> bmi;

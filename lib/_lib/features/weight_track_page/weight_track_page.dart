@@ -213,7 +213,11 @@ class _WeightPageState extends State<WeightTrackPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => BmiGraphPage(records: _records),
+                            builder: (_) => BmiGraphPage(
+                              bmi: _records.map((r) => r.bmi).toList(),
+                              dates: _records.map((r) => r.createdAt).toList(),
+                            ),
+
                           ),
                         );
                       },
