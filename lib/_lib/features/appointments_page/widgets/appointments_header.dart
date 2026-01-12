@@ -16,7 +16,7 @@ class AppointmentsHeader extends StatelessWidget {
           ),
           SizedBox(height: 6),
           Text(
-            "These are your upcoming bookings.",
+            "These are your bookings.",
             style: TextStyle(color: Colors.grey),
           ),
         ],

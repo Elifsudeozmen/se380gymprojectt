@@ -6,7 +6,7 @@ class AppointmentsList extends StatelessWidget {
   final List<QueryDocumentSnapshot> documents;
 
   const AppointmentsList({super.key, required this.documents});
-
+  
   @override
   Widget build(BuildContext context) {
     return ListView.builder(

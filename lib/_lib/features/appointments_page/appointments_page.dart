@@ -21,7 +21,6 @@ class AppointmentsPage extends StatelessWidget {
               stream: FirebaseFirestore.instance
                   .collection('appointments')
                   .where('userId', isEqualTo: user.uid)
-                  .orderBy('date')
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
@@ -36,12 +35,31 @@ class AppointmentsPage extends StatelessWidget {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-
-                final docs = snapshot.data!.docs;
+                final now = DateTime.now();
+                final docs = snapshot.data!.docs.toList();
+                docs.removeWhere((doc) {
+                  final date = (doc['date'] as Timestamp).toDate();
+                  final timeSlot = doc['timeSlot'] as String;
+                  final startTime = timeSlot.split('-').first.trim(); 
+                  final parts = startTime.split(':');
+                  final appointmentDateTime = DateTime(
+                    date.year,
+                    date.month,
+                    date.day,
+                    int.parse(parts[0]),
+                    int.parse(parts[1]),
+                  );
+                  return appointmentDateTime.isBefore(now);
+                });
+                docs.sort((a, b) {
+                  final dateA = (a['date'] as Timestamp).toDate();
+                  final dateB = (b['date'] as Timestamp).toDate();
+                  return dateA.compareTo(dateB); 
+                  });
 
                 if (docs.isEmpty) {
                   return const Center(
-                    child: Text("You have no appointments yet."),
+                    child: Text("No appointments made yet."),
                   );
                 }
 
