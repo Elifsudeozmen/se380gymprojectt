@@ -1,53 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:gymproject/_lib/features/weight_height_page/data/bmi_record_dto.dart';
-class _BmiGraphPainter extends CustomPainter {
-  final List<BmiRecordDto> records;
+import '_BmiGraphPainter.dart';
 
-  _BmiGraphPainter(this.records);
+class BmiGraphCanvas extends StatelessWidget {
+  final List<double> bmi;
+  final List<DateTime> dates;
+  final bool isDark;
+
+  const BmiGraphCanvas({
+    super.key,
+    required this.bmi,
+    required this.dates,
+    required this.isDark,
+  });
 
   @override
-  void paint(Canvas canvas, Size size) {
-    if (records.length < 2) return;
+  Widget build(BuildContext context) {
+    final graphWidth = bmi.length * 60.0; // 60px per point
 
-    final sorted = List.of(records)
-      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
-
-    final paintLine = Paint()
-      ..color = Colors.blue
-      ..strokeWidth = 3
-      ..style = PaintingStyle.stroke;
-
-    final paintPoint = Paint()
-      ..color = Colors.red
-      ..style = PaintingStyle.fill;
-
-    final minBmi = sorted.map((e) => e.bmi).reduce((a, b) => a < b ? a : b);
-    final maxBmi = sorted.map((e) => e.bmi).reduce((a, b) => a > b ? a : b);
-
-    double scaleY(double bmi) {
-      return size.height -
-          ((bmi - minBmi) / (maxBmi - minBmi)) * size.height;
-    }
-
-    final stepX = size.width / (sorted.length - 1);
-    final path = Path();
-
-    for (int i = 0; i < sorted.length; i++) {
-      final x = i * stepX;
-      final y = scaleY(sorted[i].bmi);
-
-      if (i == 0) {
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
-      }
-
-      canvas.drawCircle(Offset(x, y), 4, paintPoint);
-    }
-
-    canvas.drawPath(path, paintLine);
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: SizedBox(
+        width: graphWidth,
+        child: CustomPaint(
+          painter: BmiGraphPainter(bmi, dates, isDark),
+          size: const Size(double.infinity, double.infinity),
+        ),
+      ),
+    );
   }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

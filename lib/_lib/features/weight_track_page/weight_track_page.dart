@@ -6,6 +6,7 @@ import 'package:gymproject/_lib/features/weight_track_page/business/weight_model
 import 'package:gymproject/_lib/features/weight_track_page/presentation/widgets/track_panel.dart';
 import 'package:gymproject/_lib/features/weight_track_page/presentation/widgets/weight_control.dart';
 import 'package:gymproject/_lib/features/weight_height_page/data/bmi_record_dto.dart';
+import 'package:gymproject/_lib/features/bmi_graph_page/bmi_graph_page.dart';
 import 'package:lottie/lottie.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -193,8 +194,40 @@ class _WeightPageState extends State<WeightTrackPage> {
                         ),
                       ),
                     ),
+                  
+                  const SizedBox(height: 15),
 
-                    const SizedBox(height: 40),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xff1C1C1C),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        elevation: 0,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BmiGraphPage(records: _records),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        "VIEW BMI GRAPH",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                    const SizedBox(height: 36),
 
                     // BMI RECORD LIST
                     ListView.builder(

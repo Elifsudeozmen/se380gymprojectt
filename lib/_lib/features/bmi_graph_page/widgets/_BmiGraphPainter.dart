@@ -1,52 +1,121 @@
 import 'package:flutter/material.dart';
-import 'package:gymproject/_lib/features/weight_height_page/data/bmi_record_dto.dart';
-class _BmiGraphPainter extends CustomPainter {
-  final List<BmiRecordDto> records;
 
-  _BmiGraphPainter(this.records);
+class BmiGraphPainter extends CustomPainter {
+  final List<double> bmi;
+  final List<DateTime> dates;
+  final bool isDark;
+
+  BmiGraphPainter(this.bmi, this.dates, this.isDark);
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (records.length < 2) return;
+    if (bmi.isEmpty) return;
 
-    final sorted = List.of(records)
-      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    const leftPad = 50.0;
+    const bottomPad = 40.0;
+    const topPad = 20.0;
+    const rightPad = 20.0;
 
-    final paintLine = Paint()
-      ..color = Colors.blue
-      ..strokeWidth = 3
-      ..style = PaintingStyle.stroke;
+    final width = size.width - leftPad - rightPad;
+    final height = size.height - topPad - bottomPad;
 
-    final paintPoint = Paint()
-      ..color = Colors.red
-      ..style = PaintingStyle.fill;
+    final bg = Paint()..color = isDark ? Colors.black : Colors.white;
+    canvas.drawRect(Offset.zero & size, bg);
 
-    final minBmi = sorted.map((e) => e.bmi).reduce((a, b) => a < b ? a : b);
-    final maxBmi = sorted.map((e) => e.bmi).reduce((a, b) => a > b ? a : b);
+    final axisPaint = Paint()
+      ..color = isDark ? Colors.white70 : Colors.black54
+      ..strokeWidth = 1;
 
-    double scaleY(double bmi) {
-      return size.height -
-          ((bmi - minBmi) / (maxBmi - minBmi)) * size.height;
+    // Axes
+    canvas.drawLine(
+      Offset(leftPad, topPad),
+      Offset(leftPad, size.height - bottomPad),
+      axisPaint,
+    );
+    canvas.drawLine(
+      Offset(leftPad, size.height - bottomPad),
+      Offset(size.width - rightPad, size.height - bottomPad),
+      axisPaint,
+    );
+
+    final min = bmi.reduce((a, b) => a < b ? a : b);
+    final max = bmi.reduce((a, b) => a > b ? a : b);
+    final range = (max - min == 0) ? 1 : max - min;
+
+    final labelStyle = TextStyle(
+      color: isDark ? Colors.white70 : Colors.black87,
+      fontSize: 12,
+    );
+
+    // ---- Y Axis labels (BMI) ----
+    for (int i = 0; i <= 5; i++) {
+      final value = min + range * i / 5;
+      final y = topPad + height * (1 - i / 5);
+
+      final tp = TextPainter(
+        text: TextSpan(text: value.toStringAsFixed(1), style: labelStyle),
+        textDirection: TextDirection.ltr,
+      );
+      tp.layout();
+      tp.paint(canvas, Offset(leftPad - tp.width - 6, y - tp.height / 2));
+
+      canvas.drawLine(
+        Offset(leftPad - 4, y),
+        Offset(leftPad, y),
+        axisPaint,
+      );
     }
 
-    final stepX = size.width / (sorted.length - 1);
-
+    // ---- BMI line ----
     final path = Path();
 
-    for (int i = 0; i < sorted.length; i++) {
-      final x = i * stepX;
-      final y = scaleY(sorted[i].bmi);
+    for (int i = 0; i < bmi.length; i++) {
+      final x = leftPad + (i / (bmi.length - 1)) * width;
+      final y = topPad + (1 - (bmi[i] - min) / range) * height;
 
       if (i == 0) {
         path.moveTo(x, y);
       } else {
         path.lineTo(x, y);
       }
-
-      canvas.drawCircle(Offset(x, y), 4, paintPoint);
     }
 
-    canvas.drawPath(path, paintLine);
+    final linePaint = Paint()
+      ..color = Colors.blue
+      ..strokeWidth = 3
+      ..style = PaintingStyle.stroke;
+
+    canvas.drawPath(path, linePaint);
+
+    // ---- Points ----
+    final dotPaint = Paint()..color = Colors.red;
+    for (int i = 0; i < bmi.length; i++) {
+      final x = leftPad + (i / (bmi.length - 1)) * width;
+      final y = topPad + (1 - (bmi[i] - min) / range) * height;
+      canvas.drawCircle(Offset(x, y), 4, dotPaint);
+    }
+
+    // ---- X Axis (Dates, no overlap) ----
+   // ---- X Axis labels (inside canvas, no clipping) ----
+  final maxLabels = 6;
+  final step = (bmi.length / maxLabels).ceil();
+  for (int i = 0; i < bmi.length; i += step) {
+    final x = leftPad + (i / (bmi.length - 1)) * width;
+    final d = dates[i];
+    final label = "${d.day}/${d.month}";
+
+    final tp = TextPainter(
+    text: TextSpan(text: label, style: labelStyle),
+    textDirection: TextDirection.ltr,
+  );
+  tp.layout();
+
+  tp.paint(
+    canvas,
+    Offset(x - tp.width / 2, topPad + height + 8), // INSIDE canvas
+  );
+}
+
   }
 
   @override
