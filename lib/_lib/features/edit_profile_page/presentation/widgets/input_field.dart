@@ -12,32 +12,38 @@ class ProfileTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final textColor = isDark ? Colors.white : Colors.black;
+    final hintColor = isDark ? Colors.white70 : Colors.grey.shade600;
+    final borderColor = textColor;
+
     return TextField(
       controller: controller,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 16,
-        color: Colors.black,
+        color: textColor,
       ),
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: TextStyle(
           fontSize: 14,
-          color: Colors.grey.shade600,
+          color: hintColor,
         ),
-        enabledBorder: const UnderlineInputBorder(
+        enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: Colors.black,
+            color: borderColor,
             width: 1,
           ),
         ),
-        focusedBorder: const UnderlineInputBorder(
+        focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: Colors.black,
+            color: borderColor,
             width: 1.2,
           ),
         ),
       ),
-      cursorColor: Colors.black,
+      cursorColor: textColor,
     );
   }
 }

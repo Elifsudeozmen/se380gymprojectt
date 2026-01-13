@@ -19,23 +19,28 @@ class _PasswordFieldState extends State<PasswordField> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final textColor = isDark ? Colors.white : Colors.black;
+    final hintColor = isDark ? Colors.white70 : Colors.grey.shade600;
+
     return TextField(
       controller: widget.controller,
       obscureText: isObscure,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 16,
-        color: Colors.black,
+        color: textColor,
       ),
       decoration: InputDecoration(
         hintText: widget.hintText,
         hintStyle: TextStyle(
           fontSize: 14,
-          color: Colors.grey.shade600,
+          color: hintColor,
         ),
         suffixIcon: IconButton(
           icon: Icon(
             isObscure ? Icons.visibility_off : Icons.visibility,
-            color: Colors.black,
+            color: textColor,
           ),
           onPressed: () {
             setState(() {
@@ -43,20 +48,20 @@ class _PasswordFieldState extends State<PasswordField> {
             });
           },
         ),
-        enabledBorder: const UnderlineInputBorder(
+        enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: Colors.black,
+            color: textColor,
             width: 1,
           ),
         ),
-        focusedBorder: const UnderlineInputBorder(
+        focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color: Colors.black,
+            color: textColor,
             width: 1.2,
           ),
         ),
       ),
-      cursorColor: Colors.black,
+      cursorColor: textColor,
     );
   }
 }

@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       themeMode: theme.themeMode,
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xffF6F2EC), 
+        scaffoldBackgroundColor: const Color(0xffF6F2EC), // 🔥 TEK KAYNAK
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xffF6F2EC),
           foregroundColor: Color(0xff1C1C1C),

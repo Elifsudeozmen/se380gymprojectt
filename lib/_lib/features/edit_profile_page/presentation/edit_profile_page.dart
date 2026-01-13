@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymproject/_lib/features/edit_profile_page/business/update_profile_usecase.dart';
 import 'package:gymproject/_lib/features/edit_profile_page/data/user_repository.dart';
-import 'package:gymproject/_lib/features/registration_page/presentation/registration_page.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -26,9 +25,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
         passwordController.text.isEmpty ||
         heightController.text.isEmpty ||
         weightController.text.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Please fill in all fields.")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please fill in all fields.")),
+      );
       return;
     }
 
@@ -40,57 +39,60 @@ class _EditProfilePageState extends State<EditProfilePage> {
       weightController.text,
     );
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text("Profile updated successfully!")));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Profile updated successfully!")),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final pageBg = isDark ? Colors.black : const Color(0xffF6F3EF);
+    final textColor = isDark ? Colors.white : Colors.black;
+    final inputBg = isDark ? Colors.black : Colors.white;
+    final borderColor = textColor;
+    final buttonBg = isDark ? Colors.white : Colors.black;
+    final buttonText = isDark ? Colors.black : Colors.white;
+
     return Scaffold(
-      backgroundColor: Color(0xffF6F3EF),
+      backgroundColor: pageBg,
       appBar: AppBar(
-        backgroundColor: Color(0xffF6F3EF),
+        backgroundColor: pageBg,
         elevation: 0,
+        centerTitle: true,
+        iconTheme: IconThemeData(color: textColor),
         title: Text(
           "Edit Profile",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          style: TextStyle(color: textColor, fontWeight: FontWeight.w700),
         ),
       ),
-
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            customInput("Name", nameController),
-            customInput("Surname", surnameController),
-
-            passwordField(),
-
-            customInput("Height", heightController),
-            customInput("Weight", weightController),
-
-            const SizedBox(height: 20),
-
+            customInput("Name", nameController, textColor, borderColor, inputBg),
+            customInput("Surname", surnameController, textColor, borderColor, inputBg),
+            passwordField(textColor, borderColor, inputBg),
+            customInput("Height", heightController, textColor, borderColor, inputBg),
+            customInput("Weight", weightController, textColor, borderColor, inputBg),
+            const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
               height: 55,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
+                  backgroundColor: buttonBg,
+                  foregroundColor: buttonText,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 onPressed: update,
-                child: Text("UPDATE", style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  "UPDATE",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
           ],
@@ -99,70 +101,73 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  Widget customInput(String label, TextEditingController controller) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-        ),
-        const SizedBox(height: 6),
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black, width: .9),
-            borderRadius: BorderRadius.circular(8),
+  Widget customInput(
+    String label,
+    TextEditingController controller,
+    Color textColor,
+    Color borderColor,
+    Color inputBg,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextField(
+        controller: controller,
+        style: TextStyle(color: textColor),
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(color: textColor),
+          filled: true,
+          fillColor: inputBg,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: borderColor),
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: TextField(
-              controller: controller,
-              decoration: InputDecoration(border: InputBorder.none),
-            ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: borderColor, width: 1.4),
           ),
         ),
-        SizedBox(height: 16),
-      ],
+      ),
     );
   }
 
-  Widget passwordField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Change Password",
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-        ),
-        const SizedBox(height: 6),
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black, width: .9),
-            borderRadius: BorderRadius.circular(8),
+  Widget passwordField(
+    Color textColor,
+    Color borderColor,
+    Color inputBg,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextField(
+        controller: passwordController,
+        obscureText: !showPassword,
+        style: TextStyle(color: textColor),
+        decoration: InputDecoration(
+          labelText: "Change Password",
+          labelStyle: TextStyle(color: textColor),
+          filled: true,
+          fillColor: inputBg,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: borderColor),
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: TextField(
-              controller: passwordController,
-              obscureText: !showPassword,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    showPassword ? Icons.visibility_off : Icons.visibility,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      showPassword = !showPassword;
-                    });
-                  },
-                ),
-              ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: borderColor, width: 1.4),
+          ),
+          suffixIcon: IconButton(
+            icon: Icon(
+              showPassword ? Icons.visibility_off : Icons.visibility,
+              color: textColor,
             ),
+            onPressed: () {
+              setState(() {
+                showPassword = !showPassword;
+              });
+            },
           ),
         ),
-        SizedBox(height: 16),
-      ],
+      ),
     );
   }
 }

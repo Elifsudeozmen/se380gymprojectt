@@ -7,33 +7,24 @@ class EmailField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textColor = theme.colorScheme.onSurface;
+    final hintColor = theme.hintColor;
+    final borderColor = textColor;
+
     return TextFormField(
       controller: controller,
-      cursorColor: Colors.black,
+      cursorColor: textColor,
+      style: TextStyle(fontSize: 16, color: textColor),
       decoration: InputDecoration(
-         hintText: "Email",
-        hintStyle: TextStyle(
-          fontSize: 14,
-          color: Colors.grey.shade600,
+        hintText: "Email",
+        hintStyle: TextStyle(fontSize: 14, color: hintColor),
+        enabledBorder:
+            UnderlineInputBorder(borderSide: BorderSide(color: borderColor)),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: borderColor, width: 1.2),
         ),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.black,
-            width: 1,
-          ),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.black,
-            width: 1.2,
-          ),
-        ),
-      ),
-      style: const TextStyle(
-        fontSize: 16,
-        color: Colors.black,
       ),
     );
-        
   }
 }

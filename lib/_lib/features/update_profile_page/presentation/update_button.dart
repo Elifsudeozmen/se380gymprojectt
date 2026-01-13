@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 
 class UpdateButton extends StatelessWidget {
-  final VoidCallback onPressed;   // <-- dışarıdan fonksiyon al
+  final VoidCallback onPressed;
 
   const UpdateButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textColor = theme.colorScheme.onSurface;
+
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
+        side: BorderSide(color: textColor, width: 1.4),
         padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
-        side: const BorderSide(color: Colors.black, width: 1.4),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
-      child: const Text(
+      child: Text(
         "UPDATE",
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          color: Colors.black,
+          color: textColor,
           fontSize: 16,
         ),
       ),

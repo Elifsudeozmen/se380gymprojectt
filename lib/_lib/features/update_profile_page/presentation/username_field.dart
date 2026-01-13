@@ -7,23 +7,23 @@ class UsernameField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textColor = theme.colorScheme.onSurface;
+    final hintColor = theme.hintColor;
+
     return TextField(
       controller: controller,
-      cursorColor: Colors.black,
+      cursorColor: textColor,
+      style: TextStyle(fontSize: 16, color: textColor),
       decoration: InputDecoration(
         hintText: "Username",
-        hintStyle: TextStyle(
-          fontSize: 14,
-          color: Colors.grey.shade600,
-        ),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.black, width: 1),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.black, width: 1.2),
+        hintStyle: TextStyle(fontSize: 14, color: hintColor),
+        enabledBorder:
+            UnderlineInputBorder(borderSide: BorderSide(color: textColor)),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: textColor, width: 1.2),
         ),
       ),
-      style: const TextStyle(fontSize: 16, color: Colors.black),
     );
   }
 }

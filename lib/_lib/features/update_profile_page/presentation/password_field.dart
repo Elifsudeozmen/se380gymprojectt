@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class PasswordField extends StatefulWidget {
@@ -23,43 +22,37 @@ class _PasswordFieldState extends State<PasswordField> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textColor = theme.colorScheme.onSurface;
+    final hintColor = theme.hintColor;
+
     return TextField(
       controller: internalController,
       obscureText: _obscure,
-      cursorColor: Colors.black,
+      cursorColor: textColor,
+      style: TextStyle(fontSize: 16, color: textColor),
       decoration: InputDecoration(
         hintText: widget.label,
-        hintStyle: TextStyle(
-          fontSize: 14,
-          color: Colors.grey.shade600,
-        ),
+        hintStyle: TextStyle(fontSize: 14, color: hintColor),
         suffixIcon: IconButton(
           icon: Icon(
             _obscure ? Icons.visibility_off : Icons.visibility,
-            color: Colors.black,
+            color: textColor,
           ),
-          onPressed: () {
-            setState(() {
-              _obscure = !_obscure;
-            });
-          },
+          onPressed: () => setState(() => _obscure = !_obscure),
         ),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.black, width: 1),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.black, width: 1.2),
+        enabledBorder:
+            UnderlineInputBorder(borderSide: BorderSide(color: textColor)),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: textColor, width: 1.2),
         ),
       ),
-      style: const TextStyle(fontSize: 16, color: Colors.black),
     );
   }
 
   @override
   void dispose() {
-    if (widget.controller == null) {
-      internalController.dispose();
-    }
+    if (widget.controller == null) internalController.dispose();
     super.dispose();
   }
 }
