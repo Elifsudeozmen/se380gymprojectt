@@ -32,7 +32,6 @@ class _DayOptionState extends State<DayOption> {
     '22:00 - 00:00',
   ];
 
-  // 🔒 Slot geçmiş mi?
   bool _isPastSlot(DateTime date, String timeSlot) {
     final now = DateTime.now();
     final startHour = int.parse(timeSlot.split(':')[0]);
@@ -73,90 +72,92 @@ class _DayOptionState extends State<DayOption> {
             final isPast = _isPastSlot(widget.date, time);
             final isFull = total >= AppointmentService.maxCapacity;
 
-            return GestureDetector(
-              onTap: () {
-                // 💬 Slot'a tıklayınca yorum paneli açılır (her zaman)
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  builder: (_) =>
-                      SlotCommentsPanel(date: widget.date, timeRange: time),
-                );
-              },
-              child: StreamBuilder(
-                stream: _firestore
-                    .collection('timeSlots')
-                    .doc(slotId)
-                    .collection('comments')
-                    .limit(1)
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  final hasComments = snapshot.data?.docs.isNotEmpty ?? false;
+            return StreamBuilder<QuerySnapshot>(
+              stream: _firestore
+                  .collection('timeSlots')
+                  .doc(slotId)
+                  .collection('comments')
+                  .limit(1)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                final hasComments = snapshot.data?.docs.isNotEmpty ?? false;
 
-                  return Stack(
+                return ListTile(
+                  title: Text(time),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ListTile(
-                        title: Text(time),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('👩 Female: $female   👨 Male: $male'),
-                            const SizedBox(height: 4),
-                            LinearProgressIndicator(value: percent),
-                            const SizedBox(height: 4),
-                            Text(
-                              '$total / ${AppointmentService.maxCapacity} '
-                              '(%${(percent * 100).toStringAsFixed(0)})',
-                            ),
-                            if (isPast)
-                              const Padding(
-                                padding: EdgeInsets.only(top: 4),
-                                child: Text(
-                                  '⏳ This time slot has passed',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                        trailing: _isSubmitting
-                            ? const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : IconButton(
-                                icon: Icon(
-                                  isPast || isFull
-                                      ? Icons.lock_outline
-                                      : Icons.add_circle_outline,
-                                  color: isPast || isFull ? Colors.grey : null,
-                                ),
-                                onPressed: (isPast || isFull || _isSubmitting)
-                                    ? null
-                                    : () => _showConfirmDialog(time),
-                              ),
+                      Text('👩 Female: $female   👨 Male: $male'),
+                      const SizedBox(height: 4),
+                      LinearProgressIndicator(value: percent),
+                      const SizedBox(height: 4),
+                      Text(
+                        '$total / ${AppointmentService.maxCapacity} '
+                        '(%${(percent * 100).toStringAsFixed(0)})',
                       ),
-
-                      // 💬 Yorum balonu
-                      if (hasComments)
-                        const Positioned(
-                          top: 8,
-                          right: 48,
-                          child: Icon(
-                            Icons.chat_bubble,
-                            size: 18,
-                            color: Colors.orange,
+                      if (isPast)
+                        const Padding(
+                          padding: EdgeInsets.only(top: 4),
+                          child: Text(
+                            '⏳ This time slot has passed',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
                           ),
                         ),
                     ],
-                  );
-                },
-              ),
+                  ),
+
+                  // 🔥 YENİ TRAILING
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // 💬 YORUM İKONU
+                      IconButton(
+                        icon: Icon(
+                          hasComments
+                              ? Icons.chat_bubble
+                              : Icons.chat_bubble_outline,
+                          color: hasComments ? Colors.orange : Colors.grey,
+                          size: 20,
+                        ),
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (_) => SlotCommentsPanel(
+                              date: widget.date,
+                              timeRange: time,
+                            ),
+                          );
+                        },
+                      ),
+
+                      // ➕ / 🔒 SLOT BUTONU
+                      _isSubmitting
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : IconButton(
+                              icon: Icon(
+                                isPast || isFull
+                                    ? Icons.lock_outline
+                                    : Icons.add_circle_outline,
+                                color:
+                                    isPast || isFull ? Colors.grey : null,
+                              ),
+                              onPressed:
+                                  (isPast || isFull || _isSubmitting)
+                                      ? null
+                                      : () => _showConfirmDialog(time),
+                            ),
+                    ],
+                  ),
+                );
+              },
             );
           },
         );
@@ -164,9 +165,6 @@ class _DayOptionState extends State<DayOption> {
     );
   }
 
-  // ======================
-  // 🔹 CONFIRM
-  // ======================
   void _showConfirmDialog(String time) {
     showDialog(
       context: context,
@@ -190,9 +188,6 @@ class _DayOptionState extends State<DayOption> {
     );
   }
 
-  // ======================
-  // 🔹 CREATE
-  // ======================
   Future<void> _createAppointment(String time) async {
     if (_isSubmitting) return;
 
@@ -215,9 +210,9 @@ class _DayOptionState extends State<DayOption> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('✅ Appointment created')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('✅ Appointment created')),
+      );
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
     }
